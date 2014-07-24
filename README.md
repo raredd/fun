@@ -24,12 +24,10 @@ to play:            | description
 
   * sparkbar
   * R
-  * [Collatz conjecture](#collatz)
-  * [Trace path](#trace)
+  * [Collatz conjecture](#collatz-conjecture)
+  * [Trace path](#trace-path)
 
 ----------------
-
-<a id='collatz'></a>
 
 ### collatz conjecture
 
@@ -43,7 +41,7 @@ opts_chunk$set(cache = FALSE, tidy = FALSE, echo = TRUE,
                fig.width = 9, fig.height = 6)
 ```
 
-<a href="http://xkcd.com/710/"><img src="http://imgs.xkcd.com/comics/collatz_conjecture.png" style="display: block; margin: auto;"/></a>
+<img src="http://imgs.xkcd.com/comics/collatz_conjecture.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 #### function
 
