@@ -41,7 +41,7 @@ opts_chunk$set(cache = FALSE, tidy = FALSE, echo = TRUE,
                fig.width = 9, fig.height = 6)
 ```
 
-<img src="http://imgs.xkcd.com/comics/collatz_conjecture.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<div align=center><a href="http://xkcd.com/710/"><img src="http://imgs.xkcd.com/comics/collatz_conjecture.png" style="display: block; margin: auto;" /></a></div>
 
 #### function
 
