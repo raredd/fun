@@ -1,19 +1,8 @@
-		CHANGES IN fun VERSION 0.1-0
+games 0.1.1
+-----------
+  * added witchcraft and sparkbar
+  * R CMD check
 
-
-NEW FEATURES
-
-  o R can perform t-test, F test and so on, but sometimes we use R to
-  test Alzheimer's disease; see alzheimer_test()
-
-  o lights_out() to play the "Lights Out" game
-
-  o mine_sweeper() to play the Minesweeper game
-
-  o sliding_puzzle() to play the Sliding Puzzle
-
-  o tower_of_hanoi() to watch the game Tower of Hanoi
-
-  o gomoku(), the game of ``Five in a row''
-
-  o and other interesting functions
+games 0.1.0
+-----------
+  * initial build

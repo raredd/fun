@@ -1,35 +1,47 @@
-##' Test Alzheimer's disease by finding out the different character in
-##' a character rectangle
-##'
-##' Please try hard to find the letter "N" in 300 "M"s, one "6" in 300
-##' "9"s, etc.
-##'
-##' Follow the instructions and finish the test.
-##' @param char1 the 'background' character
-##' @param char2 the character to be found out
-##' @param nr number of rows of the character rectangle
-##' @param nc number of columns
-##' @param seed seed for random number generation
-##' @param ... other arguments passed to \code{\link[base]{set.seed}}
-##' @return If at least one test item has been passed, a data.frame
-##' will be returned telling the result of the test.
-##' @note Don't be too serious about this test. I'm no doctor, but I
-##' think this will be a good present to your friends.
-##' @author Yihui Xie <\url{http://yihui.name}>
-##' @export
-##' @examples
-##' x = alzheimer_test()
-alzheimer_test = function(char1 = c("9", "O", "M", "I",
-    "F", "D"), char2 = c("6", "C", "N", "T", "E", "O"), nr = 10,
-    nc = 30, seed = NULL, ...) {
+#' Alzheimer's test
+#'
+#' @description
+#' Try to find the character that doesn't belong. Search for the letter N in 
+#' 300 Ms; find one 6 in 300 9s; etc.
+#'
+#' Follow the instructions, and find peace of mind.
+#' 
+#' @usage
+#' alzheimer_test(char1 = c('9', 'O', 'M', 'I', 'F', 'D'), 
+#'                char2 = c('6', 'C', 'N', 'T', 'E', 'O'), 
+#'                nr = 10, nc = 30, seed, ...)
+#' 
+#' @param char1 the background character
+#' @param char2 the character to be found out
+#' @param nr number of rows of the character rectangle
+#' @param nc number of columns
+#' @param seed seed for random number generation
+#' @param ... other arguments passed to \code{\link[base]{set.seed}}
+#' 
+#' @return If at least one test item has been passed, a data.frame
+#' will be returned telling the result of the test.
+#' @note Don't be too serious about this test. I'm no doctor, but I
+#' think this will be a good present to your friends.
+#' @author Yihui Xie <\url{http://yihui.name}>
+#' 
+#' @examples
+#' alzheimer_test()
+#' 
+#' @export
+
+alzheimer_test = function(char1 = c('9', 'O', 'M', 'I', 'F', 'D'), 
+                          char2 = c('6', 'C', 'N', 'T', 'E', 'O'), 
+                          nr = 10, nc = 30, seed, ...) {
+  
     if (!interactive()) return()
+    
     cat("This is a REAL neurological test. Sit comfortably and be calm.\n\n")
     mlen = max(length(char1), length(char2), length(nr), length(nc))
     char1 = rep(char1, length = mlen)
     char2 = rep(char2, length = mlen)
     nr = rep(nr, length = mlen)
     nc = rep(nc, length = mlen)
-    if (!is.null(seed))
+    if (!missing(seed))
         set.seed(seed, ...)
     tm1 = tm2 = ans = ans.u = ans.t = NULL
     for (j in 1:mlen) {

@@ -1,37 +1,47 @@
-##' Play the ``Lights Out'' game in R
-##'
-##' By default, the white squares in the plot denote the lights that
-##' are on, and black ones for the off. When you click on a light,
-##' this light as well as the four neighbors will switch theirs
-##' status. Your mission is to close all the lights.
-##'
-##' @param width number of lights in x axis
-##' @param height number of lights in y axis
-##' @param steps number of ``seed'' lights to initialize the
-##' puzzle. In general, the larger \code{steps} is, the more complex
-##' this puzzle may be
-##' @param cheat logical. If \code{TRUE} a data frame indicating the
-##' steps to solve this puzzle will be printed
-##' @param col.off color when lights off
-##' @param col.on color when lights on
-##' @param col.frame color of lights border
-##' @param seed seed for random number generator
-##' @author Yixuan Qiu \email{yixuan.qiu@@cos.name}
-##' @note Linux/Mac users have to use \code{X11(type = 'Xlib')} or the
-##' Cairo graphics device \code{Cairo()} in the package
-##' \pkg{cairoDevice}.
-##' @references \url{http://en.wikipedia.org/wiki/Lights_Out_(game)}
-##' @keywords iplot
-##' @export
-##' @examples
-##' ## should use Xlib for the x11() device under *nix, e.g
-##' \dontrun{if (.Platform$OS.type == 'windows') x11() else x11(type = 'Xlib')}
-##'
-##' lights_out()
+#' Lights out
+#'
+#' @description
+#' By default, the white squares in the plot denote lights on, and black 
+#' squares are lights off. When you click on a light, this light as well as 
+#' its four neighbors will switch their status. 
+#' 
+#' Your mission is to turn off all the lights.
+#' 
+#' @usage
+#' lights_out(width = 5, height = 5, steps = 3, cheat = FALSE, 
+#'            col.off = 'black', col.on = 'white', 
+#'            col.frame = 'lightblue', seed)
+#'
+#' @param width number of lights in x-axis
+#' @param height number of lights in y-axis
+#' @param steps number of \code{seed} lights to initialize the puzzle; in 
+#' general, the larger \code{steps} is, the more complex the puzzle will be
+#' @param cheat logical; if \code{TRUE} a data frame indicating the steps to 
+#' solve this puzzle will be printed
+#' @param col.off color when lights off
+#' @param col.on color when lights on
+#' @param col.frame color of lights border
+#' @param seed seed for random number generator
+#' 
+#' @author Yixuan Qiu \email{yixuan.qiu@@cos.name}
+#' @note Linux/Mac users have to use \code{X11(type = 'Xlib')} or the
+#' Cairo graphics device \code{Cairo()} in the package
+#' \pkg{cairoDevice}.
+#' @references \url{http://en.wikipedia.org/wiki/Lights_Out_(game)}
+#' 
+#' @examples
+#' lights_out()
+#' 
+#' @export
+
 lights_out <- function(width = 5, height = 5,
-    steps = 3, cheat = FALSE, col.off = "black", col.on = "white",
-    col.frame = "lightblue", seed = NULL) {
-    if (!interactive()) return()
+    steps = 3, cheat = FALSE, col.off = 'black', col.on = 'white',
+    col.frame = 'lightblue', seed) {
+  
+    if (!interactive()) 
+      return(invisible())
+    
+    x11()
     zmat <- mat.ini <- matrix(1, height, width)
     trans <- function(z, x, y) {
         nr <- nrow(z)
@@ -43,7 +53,8 @@ lights_out <- function(width = 5, height = 5,
         z[mrow, y] <- z[mrow, y] * (-1)
         return(z)
     }
-    if (!is.null(seed)) set.seed(seed)
+    if (!missing(seed)) 
+      set.seed(seed)
     grid.x <- sample(1:height, steps, replace = TRUE)
     grid.y <- sample(1:width, steps, replace = TRUE)
     if (cheat) {

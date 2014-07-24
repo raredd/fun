@@ -1,20 +1,28 @@
-##' The game of Gomoku, a.k.a Five in a row
-##'
-##' There are two players in this game who play one after the other
-##' using black and white stones respectively. The winner is the first
-##' player to get an unbroken row of five stones horizontally,
-##' vertically, or diagonally.
-##' @param n the number of rows and columns in the board (the default
-##' 19 generates the standard board)
-##' @return \code{NULL}
-##' @note The players should judge the winner by themselves; this
-##' function does not do this job (patches are welcome, of course).
-##' @author Yihui Xie <\url{http://yihui.name}>; modified from the
-##' code by pklin
-##' @references \url{http://cos.name/cn/topic/104750},
-##' \url{http://en.wikipedia.org/wiki/Gomoku}
-##' @export
-##' @examples gomoku()
+#' The game of Gomoku (Five in a row)
+#'
+#' @description
+#' You need a friend to play this game.
+#' 
+#' Play one after the other using black and white stones, respectively. The 
+#' winner is the first player to get an unbroken row of five stones 
+#' horizontally, vertically, or diagonally.
+#' 
+#' @usage gomoku(n = 19)
+#' 
+#' @param n the number of rows and columns in the board (default is 19 and 
+#' generates the standard board)
+#' 
+#' @note The players should judge the winner by themselves; this function does 
+#' not do this job (patches are welcome, of course).
+#' @author Yihui Xie <\url{http://yihui.name}>; modified from the code by pklin
+#' @references \url{http://cos.name/cn/topic/104750},
+#' \url{http://en.wikipedia.org/wiki/Gomoku}
+#' 
+#' @examples
+#' gomoku()
+#' 
+#' @export
+
 gomoku <- function(n = 19) {
     if (!interactive()) return()
     par(mar = rep(0, 4))
