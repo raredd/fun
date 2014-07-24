@@ -1,0 +1,51 @@
+---
+output:
+  html_document:
+    css: ~/knitr.css
+    fig_caption: no
+    keep_md: yes
+    self_contained: no
+    theme: journal
+    toc: no
+---
+
+#### trace path
+
+```{r setup}
+library(knitr)
+opts_chunk$set(cache = FALSE, tidy = FALSE, echo = TRUE,
+               dev = 'CairoPNG', 
+               dev.args = list(antialias = 'none', bg = 'transparent'), 
+               dpi = 150, fig.align = 'center')
+```
+
+#### function
+
+```{r trace_path}
+trace.path <- function(lens, turn) {
+  op <- par(no.readonly = TRUE)
+  on.exit(par(op))
+  facing <- pi / 2 + cumsum(turn)
+  move <- lens * exp(1i * facing)
+  position <- cumsum(move)
+  x <- c(0, Re(position))
+  y <- c(0, Im(position))
+  plot.new()
+  par(mar = c(0, 0, 0, 0))
+  plot.window(range(x), range(y))
+  lines(x, y)
+}
+```
+
+#### example plots
+
+```{r examples}
+trace.path(lens = seq(0, 1,  length.out = 200),
+           turn = rep(pi/2 * (-1 + 1/200), 200))
+trace.path(lens = seq(1, 10, length.out = 1000),
+           turn = rep(2 * pi / 10, 1000))
+trace.path(lens = seq(0, 1,  length.out = 500),
+           turn = seq(0, pi, length.out = 500))
+trace.path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
+           turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
+```
