@@ -31,20 +31,9 @@ to play:            | description
 
 ### collatz conjecture
 
-
-```r
-library(knitr)
-opts_chunk$set(cache = FALSE, tidy = FALSE, echo = TRUE,
-               dev = 'CairoPNG', 
-               dev.args = list(antialias = 'none', bg = 'transparent'), 
-               dpi = 150, fig.align = 'center',
-               fig.width = 9, fig.height = 6)
-```
-
 <div align=center><a href="http://xkcd.com/710/"><img src="http://imgs.xkcd.com/comics/collatz_conjecture.png" style="display: block; margin: auto;" /></a></div>
 
 #### function
-
 
 ```r
 collatz <- function(n, stoptime = FALSE) {
@@ -91,7 +80,6 @@ collatz <- function(n, stoptime = FALSE) {
 ```
 
 #### examples
-
 
 ```r
 collatz(19)
@@ -158,17 +146,7 @@ collatz(5005, stoptime = TRUE)
 
 ### trace path
 
-
-```r
-library(knitr)
-opts_chunk$set(cache = FALSE, tidy = FALSE, echo = TRUE,
-               dev = 'CairoPNG', 
-               dev.args = list(antialias = 'none', bg = 'transparent'), 
-               dpi = 150, fig.align = 'center')
-```
-
 #### function
-
 
 ```r
 trace.path <- function(lens, turn) {
@@ -187,7 +165,6 @@ trace.path <- function(lens, turn) {
 ```
 
 #### example plots
-
 
 ```r
 trace.path(lens = seq(0, 1,  length.out = 200),
