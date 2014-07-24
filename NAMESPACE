@@ -2,9 +2,11 @@
 
 export(R)
 export(alzheimer_test)
+export(collatz)
 export(gomoku)
 export(lights_out)
 export(mine_sweeper)
 export(sliding_puzzle)
 export(spark)
+export(trace_path)
 export(witchcraft)

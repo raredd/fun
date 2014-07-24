@@ -1,3 +1,8 @@
+games 0.1.2
+-----------
+  * added collatz and trace_path
+  * added visualizations
+
 games 0.1.1
 -----------
   * added witchcraft and sparkbar
