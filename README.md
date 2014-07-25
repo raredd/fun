@@ -144,12 +144,12 @@ collatz(5005, stoptime = TRUE)
 
 <a id='trace'></a>
 
-### trace path
+### Trace path
 
 #### function
 
 ```r
-trace.path <- function(lens, turn) {
+trace_path <- function(lens, turn) {
   op <- par(no.readonly = TRUE)
   on.exit(par(op))
   facing <- pi / 2 + cumsum(turn)
@@ -167,28 +167,28 @@ trace.path <- function(lens, turn) {
 #### example plots
 
 ```r
-trace.path(lens = seq(0, 1,  length.out = 200),
+trace_path(lens = seq(0, 1,  length.out = 200),
            turn = rep(pi/2 * (-1 + 1/200), 200))
 ```
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
-trace.path(lens = seq(1, 10, length.out = 1000),
+trace_path(lens = seq(1, 10, length.out = 1000),
            turn = rep(2 * pi / 10, 1000))
 ```
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
-trace.path(lens = seq(0, 1,  length.out = 500),
+trace_path(lens = seq(0, 1,  length.out = 500),
            turn = seq(0, pi, length.out = 500))
 ```
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
-trace.path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
+trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
            turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
 ```
 

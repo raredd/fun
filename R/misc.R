@@ -1,5 +1,5 @@
 ### miscellaneous stuff
-# sparkbar, R, collatz, trace.path
+# sparkbar, R, collatz, trace_path
 ###
 
 #' SparkBar generator
