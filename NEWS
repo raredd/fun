@@ -1,5 +1,9 @@
 games 0.1.2
 -----------
+  * added bubble_sort, fibonacci, golden
+
+games 0.1.2
+-----------
   * added collatz and trace_path
   * added visualizations
 

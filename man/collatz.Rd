@@ -4,14 +4,8 @@
 \title{Collatz conjecture}
 \usage{
 collatz(n, stoptime = FALSE)
-
-collatz(n, stoptime = FALSE)
 }
 \arguments{
-\item{n}{starting number (integer)}
-
-\item{stoptime}{logical}
-
 \item{n}{starting number (integer)}
 
 \item{stoptime}{logical; if \code{FALSE} (default), the value at each
@@ -22,14 +16,8 @@ iterations each starting value takes to reach 1}
 }
 \description{
 Perform and visualize the Collatz conjecture.
-
-Perform and visualize the Collatz conjecture.
 }
 \examples{
-collatz(19)
-collatz(1161)
-collatz(1618, stoptime = TRUE)
-collatz(5005, stoptime = TRUE)
 collatz(19)
 collatz(1161)
 collatz(1618, stoptime = TRUE)
@@ -37,14 +25,8 @@ collatz(5005, stoptime = TRUE)
 }
 \author{
 Robert Redd
-
-Robert Redd
 }
 \references{
-\url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
-\url{http://en.wikipedia.org/wiki/Collatz_conjecture}
-\url{https://oeis.org/A006877}
-
 \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
 \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
 \url{https://oeis.org/A006877}

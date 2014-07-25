@@ -1,5 +1,5 @@
 ### miscellaneous stuff
-# sparkbar, R, collatz, trace_path
+# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci
 ###
 
 #' SparkBar generator
@@ -59,11 +59,11 @@ spark <- function(...) {
 
 R <- function() {
   eval(quote({h=character;r=rep;a=b=h(0);p=options()$width%/%2-5;n="
-  ";j=r(toupper(substring(mode(a),4,4)),sum(r(5:9,2)+1)-3)
-  k=r(5:9,2);k[4:5]=7;k=cumsum(k+1);j[k]=n;m=paste(h(1),h(1
-  ));s=c(0,k[-10])+1;j[c(16:17,24:26,32:33,46:47,53:55,61:64
-  ,70:74)]=m;for(i in 1:10)a=c(a,r(m,p),j[s[i]:k[i]])
-  cat(c(n,a),sep=b)}))
+              ";j=r(toupper(substring(mode(a),4,4)),sum(r(5:9,2)+1)-3)
+              k=r(5:9,2);k[4:5]=7;k=cumsum(k+1);j[k]=n;m=paste(h(1),h(1
+              ));s=c(0,k[-10])+1;j[c(16:17,24:26,32:33,46:47,53:55,61:64
+                                     ,70:74)]=m;for(i in 1:10)a=c(a,r(m,p),j[s[i]:k[i]])
+              cat(c(n,a),sep=b)}))
 }
 
 #' Collatz conjecture
@@ -168,4 +168,111 @@ trace_path <- function(lens, turn) {
   par(mar = c(0, 0, 0, 0))
   plot.window(range(x), range(y))
   lines(x, y)
+}
+
+#' Bubble sort
+#' 
+#' The bubble sort algorithm iteratively sorts pairs of numbers by swapping 
+#' each pair if unsorted and repeating until all numbers are properly sorted.
+#' 
+#' @usage bubble_sort(vec)
+#' 
+#' @param vec a vector of unsorted integers
+#' 
+#' @references
+#' Modified from 
+#' \url{http://www.numbertheory.nl/2013/05/10/bubble-sort-implemented-in-pure-r/}
+#' 
+#' @examples
+#' \dontrun{
+#' bubble_sort(round(runif(100, 0, 100)))
+#' }
+#' @export
+
+bubble_sort <- function(vec) {
+  swap_pass <- function(vec) {
+    for (i in seq(1, length(vec) - 1)) {
+      vec[i:(i + 1)] <- swap_if_larger(vec[i:(i + 1)])
+    }
+    return(vec)
+  }
+  swap_if_larger <- function(pair) 
+    ifelse (c(larger(pair), larger(pair)), rev(pair), pair)
+  larger <- function(pair)
+    ifelse (pair[1] > pair[2], TRUE, FALSE)
+  f <- function(x) sample(1:length(x), 1)
+  
+  new_vec <- swap_pass(vec)
+  plot.new()
+  par(xpd = NA, mar = c(0,0,0,0))
+  plot.window(xlim = range(new_vec), ylim = range(new_vec))
+  points(new_vec, 1:length(new_vec), pch = 19, cex = .5, col = f(colors()))
+  text(x = f(new_vec), y = f(new_vec), labels = '!! bubble sort !!', 
+       srt = f(1:360), col = f(colors()), font = 2)
+  Sys.sleep(.1)
+  if (isTRUE(all.equal(vec, new_vec))) { 
+    return(new_vec) 
+  } else {
+    return(bubble_sort(new_vec))
+  }
+}
+
+#' Fibonacci's sequence
+#' 
+#' @usage fibonacci(x)
+#' 
+#' @param x integer
+#' 
+#' @examples
+#' fibonacci(20)
+#' sapply(1:20, function(x) fibonacci(x))
+#' 
+#' @export
+
+fibonacci <- local({
+  memo <- c(1, 1, rep(NA, 100))
+  f <- function(x) {
+    if(x == 0) 
+      return(0)
+    if(x < 0) 
+      return(NA)
+    if(x > length(memo))
+      stop('\'x\' is too big for implementation')
+    if(!is.na(memo[x])) 
+      return(memo[x])
+    ans <- f(x - 2) + f(x - 1)
+    memo[x] <<- ans
+    ans
+  }
+})
+
+#' Golden ratio
+#' 
+#' Plots the golden ratio.
+#' 
+#' @usage golden(theta)
+#' @param theta sequence of angles
+#' 
+#' @examples
+#' golden()
+#' 
+#' @export
+
+golden <- function(theta) {
+  op <- par(no.readonly = TRUE)
+  on.exit(par(op))
+  
+  f <- function(x) 
+    ifelse(x == 90, 1, exp(2 * pi / tan(x * 2 * pi / 360)))
+  f1 <- function(x)
+    ifelse(x == 1, 90, 360 * atan(2 * pi / log(x)) / 2 / pi)
+  
+  if (missing(theta))
+    th <- seq(-100, -9.25, by = .01)
+  r <- f(60) ** (th / 2 / pi)
+  x <- r * cos(th)
+  y <- r * sin(th)
+  
+  par(ann = FALSE, mar = c(0,0,0,0), bg = 'lightgoldenrod')
+  plot(x, y, type = 'l', axes = FALSE)
 }

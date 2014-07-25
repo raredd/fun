@@ -2,7 +2,10 @@
 
 export(R)
 export(alzheimer_test)
+export(bubble_sort)
 export(collatz)
+export(fibonacci)
+export(golden)
 export(gomoku)
 export(lights_out)
 export(mine_sweeper)
