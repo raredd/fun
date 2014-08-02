@@ -1,5 +1,5 @@
 ### miscellaneous stuff
-# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci
+# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, golden
 ###
 
 #' SparkBar generator
@@ -228,7 +228,7 @@ bubble_sort <- function(vec) {
 #' 
 #' @examples
 #' fibonacci(20)
-#' sapply(1:20, function(x) fibonacci(x))
+#' sapply(1:20, fibonacci)
 #' 
 #' @export
 
@@ -271,10 +271,10 @@ golden <- function(theta) {
     ifelse(x == 1, 90, 360 * atan(2 * pi / log(x)) / 2 / pi)
   
   if (missing(theta))
-    th <- seq(-100, -9.25, by = .01)
-  r <- f(60) ** (th / 2 / pi)
-  x <- r * cos(th)
-  y <- r * sin(th)
+    theta <- seq(-100, -9.25, by = .01)
+  r <- f(60) ** (theta / 2 / pi)
+  x <- r * cos(theta)
+  y <- r * sin(theta)
   
   par(ann = FALSE, mar = c(0,0,0,0), bg = 'lightgoldenrod')
   plot(x, y, type = 'l', axes = FALSE)

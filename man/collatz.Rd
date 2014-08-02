@@ -23,9 +23,6 @@ collatz(1161)
 collatz(1618, stoptime = TRUE)
 collatz(5005, stoptime = TRUE)
 }
-\author{
-Robert Redd
-}
 \references{
 \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
 \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
