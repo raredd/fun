@@ -37,25 +37,25 @@ trace.path(lens = seq(0, 1,  length.out = 200),
            turn = rep(pi/2 * (-1 + 1/200), 200))
 ```
 
-<img src="./trace_path_files/figure-html/examples1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace.path(lens = seq(1, 10, length.out = 1000),
            turn = rep(2 * pi / 10, 1000))
 ```
 
-<img src="./trace_path_files/figure-html/examples2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace.path(lens = seq(0, 1,  length.out = 500),
            turn = seq(0, pi, length.out = 500))
 ```
 
-<img src="./trace_path_files/figure-html/examples3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace.path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
            turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
 ```
 
-<img src="./trace_path_files/figure-html/examples4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />

@@ -74,7 +74,7 @@ collatz(19)
 ## Nth iteration: 4
 ```
 
-<img src="./collatz_files/figure-html/examples1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(1161)
@@ -87,7 +87,7 @@ collatz(1161)
 ## Nth iteration: 35
 ```
 
-<img src="./collatz_files/figure-html/examples2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(1618, stoptime = TRUE)
@@ -103,7 +103,7 @@ collatz(1618, stoptime = TRUE)
 ##  1 2 3 6 7 9 18 25 27 54 73 97 129 171 231 313 327 649 703 871 1161
 ```
 
-<img src="./collatz_files/figure-html/examples3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(5005, stoptime = TRUE)
@@ -119,4 +119,4 @@ collatz(5005, stoptime = TRUE)
 ##  1 2 3 6 7 9 18 25 27 54 73 97 129 171 231 313 327 649 703 871 1161 2223 2463 2919 3711
 ```
 
-<img src="./collatz_files/figure-html/examples4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
