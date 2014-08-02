@@ -13,6 +13,6 @@ Fibonacci's sequence
 }
 \examples{
 fibonacci(20)
-sapply(1:20, function(x) fibonacci(x))
+sapply(1:20, fibonacci)
 }
 
