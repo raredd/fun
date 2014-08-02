@@ -62,7 +62,7 @@ R <- function() {
               ";j=r(toupper(substring(mode(a),4,4)),sum(r(5:9,2)+1)-3)
               k=r(5:9,2);k[4:5]=7;k=cumsum(k+1);j[k]=n;m=paste(h(1),h(1
               ));s=c(0,k[-10])+1;j[c(16:17,24:26,32:33,46:47,53:55,61:64
-                                     ,70:74)]=m;for(i in 1:10)a=c(a,r(m,p),j[s[i]:k[i]])
+              ,70:74)]=m;for(i in 1:10)a=c(a,r(m,p),j[s[i]:k[i]])
               cat(c(n,a),sep=b)}))
 }
 
@@ -79,7 +79,6 @@ R <- function() {
 #' of numbers \code{<= n}, that is, from one to \code{n}, the number of 
 #' iterations each starting value takes to reach 1
 #' 
-#' @author Robert Redd
 #' @references 
 #' \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
 #' \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
@@ -142,8 +141,6 @@ collatz <- function(n, stoptime = FALSE) {
 #' @param lens length, number of points
 #' @param turn turns at each value along \code{lens}
 #' 
-#' @author Robert Redd
-#' 
 #' @examples
 #' trace_path(lens = seq(0, 1,  length.out = 200),
 #'            turn = rep(pi/2 * (-1 + 1/200), 200))
@@ -153,6 +150,12 @@ collatz <- function(n, stoptime = FALSE) {
 #'            turn = seq(0, pi, length.out = 500))
 #' trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 #'            turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
+#' trace_path(lens = seq(-1, 1,  length.out = 200),
+#'            turn = rep(pi / 1 * (-1 + 1/200), 200))
+#' trace_path(lens = seq(-1, 1,  length.out = 500),
+#'            turn = rep(pi / 1 * (-1 + 1/200), 500))
+#' trace_path(lens = seq(-1, 1,  length.out = 1000),
+#'            turn = rep(pi / 1 * (-1 + 1/500), 1000))
 #' 
 #' @export
 
@@ -206,7 +209,7 @@ bubble_sort <- function(vec) {
   plot.new()
   par(xpd = NA, mar = c(0,0,0,0))
   plot.window(xlim = range(new_vec), ylim = range(new_vec))
-  points(new_vec, 1:length(new_vec), pch = 19, cex = .5, col = f(colors()))
+  points(1:length(new_vec), new_vec, pch = 19, cex = .5, col = f(colors()))
   text(x = f(new_vec), y = f(new_vec), labels = '!! bubble sort !!', 
        srt = f(1:360), col = f(colors()), font = 2)
   Sys.sleep(.1)
