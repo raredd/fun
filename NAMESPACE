@@ -3,6 +3,7 @@
 export(R)
 export(alzheimer_test)
 export(bubble_sort)
+export(ch)
 export(collatz)
 export(fibonacci)
 export(golden)
