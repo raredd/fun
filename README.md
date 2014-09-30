@@ -26,6 +26,8 @@ to play:            | description
   * R
   * [Collatz conjecture](#collatz-conjecture)
   * [Trace path](#trace-path)
+  * [Bubble sort](#bs)
+  * [Calvin and Hobbes](#ch)
 
 ----------------
 
@@ -197,6 +199,8 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 
 ### the following have absolutely no use, I agree
 
+<a id='bs'></a>
+
 ```r
 bubble_sort(round(runif(100, 0, 100)))
 ```
@@ -207,8 +211,10 @@ bubble_sort(round(runif(100, 0, 100)))
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
 
+<a id='ch'></a>
+
 ```r
-ch('calvin)
+ch('calvin')
 ```
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
