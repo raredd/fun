@@ -193,3 +193,29 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 ```
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+
+
+### the following have absolutely no use, I agree
+
+```r
+bubble_sort(round(runif(100, 0, 100)))
+```
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs1.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs2.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+
+```r
+ch('calvin)
+```
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+
+```r
+ch('hobbes')
+```
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/h.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+
