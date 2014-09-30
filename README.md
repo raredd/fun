@@ -26,8 +26,8 @@ to play:            | description
   * R
   * [Collatz conjecture](#collatz-conjecture)
   * [Trace path](#trace-path)
-  * [Bubble sort](#bs)
-  * [Calvin and Hobbes](#ch)
+  * [Bubble sort](#bubble-sort)
+  * [Calvin and Hobbes](#calvin-and-hobbes)
 
 ----------------
 
@@ -197,9 +197,9 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 
-### the following have absolutely no use, I agree
+#### (the following have absolutely no use, I agree)
 
-<a id='bs'></a>
+### Bubble sort
 
 ```r
 bubble_sort(round(runif(100, 0, 100)))
@@ -211,7 +211,7 @@ bubble_sort(round(runif(100, 0, 100)))
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
 
-<a id='ch'></a>
+### Calvin and Hobbes
 
 ```r
 ch('calvin')
