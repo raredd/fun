@@ -1,13 +1,10 @@
 ### miscellaneous stuff
-# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, golden
+# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, golden, is.happy
 ###
 
 #' SparkBar generator
 #' 
 #' Generates a sparkbar from a sequence of numbers.
-#' 
-#' @usage
-#' spark(...)
 #' 
 #' @aliases
 #' sparkbar, spark
@@ -69,8 +66,6 @@ R <- function() {
 #' Collatz conjecture
 #' 
 #' Perform and visualize the Collatz conjecture.
-#' 
-#' @usage collatz(n, stoptime = FALSE)
 #' 
 #' @param n starting number (integer)
 #' @param stoptime logical; if \code{FALSE} (default), the value at each
@@ -136,8 +131,6 @@ collatz <- function(n, stoptime = FALSE) {
 
 #' Trace path
 #' 
-#' @usage trace_path(lens, turn)
-#' 
 #' @param lens length, number of points
 #' @param turn turns at each value along \code{lens}
 #' 
@@ -177,8 +170,6 @@ trace_path <- function(lens, turn) {
 #' 
 #' The bubble sort algorithm iteratively sorts pairs of numbers by swapping 
 #' each pair if unsorted and repeating until all numbers are properly sorted.
-#' 
-#' @usage bubble_sort(vec)
 #' 
 #' @param vec a vector of unsorted integers
 #' 
@@ -222,9 +213,9 @@ bubble_sort <- function(vec) {
 
 #' Fibonacci's sequence
 #' 
-#' @usage fibonacci(x)
+#' Calculates the nth number of Fibonacci's sequence.
 #' 
-#' @param x integer
+#' @param x a positive integer
 #' 
 #' @examples
 #' fibonacci(20)
@@ -253,7 +244,6 @@ fibonacci <- local({
 #' 
 #' Plots the golden ratio.
 #' 
-#' @usage golden(theta)
 #' @param theta sequence of angles
 #' 
 #' @examples
@@ -524,3 +514,30 @@ p1y <- c(53.71474, 54.45644, 53.57493, 53.090968, 52.34287, 51.457384,
          89.903832, 90.848564, 10000000025, 88.66338, 88.211806, 87.780914, 
          88.35914, 10000000025, 86.016494, 86.503278, 86.523714, 85.962934, 
          84.588444, 84.727278, 85.230296, 85.72444)
+
+#' Happy numbers
+#' 
+#' For any positive integer, \code{N}, if the sum of the squares of its
+#' digits equals one (or by recursion), then \code{N} is happy \code{:\}}!
+#' Otherwise, \code{N} is sad \code{:c}.
+#' 
+#' @param x a positive integer (any non-digit characters will be ignored)
+#' 
+#' @examples
+#' is.happy(20)
+#' is.happy(19)
+#' 
+#' @export
+
+is.happy <- function(x) {
+  sad <- sample(c('>:[',':-(',':(',':-c',':c',':-<',':C',':{',':-[',':[',':{'), 1)
+  hap <- sample(c(':-)',':)',':o)',':]',':3',':)',':}','=]','8)','=)',':}',':^)',':)'), 1)
+  x <- gsub('\\D', '', x)
+  ok <- (function(x) {
+    xx <- as.numeric(strsplit(as.character(x), '')[[1]]) ** 2
+    tryCatch(if ((xx <- sum(xx)) == 1) sprintf('happy! %s', hap) else Recall(xx), 
+             error = function(e) sprintf('sad %s', sad))
+  })(x)
+  sprintf('%s is %s', x, ok)
+}
+

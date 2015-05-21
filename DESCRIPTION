@@ -7,5 +7,5 @@ Maintainer: Robert Redd <raredd01@gmail.com>
 Description: This is a collection of games and other stuff written in R.
 License: GPL-3
 LazyData: yes
-URL: https://github.com/raredd/gamer
+URL: https://github.com/raredd/fun
 Roxygen: list(wrap = FALSE)

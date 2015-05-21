@@ -2,7 +2,7 @@
 #'
 #' This is a collection of games and other stuff written in R.
 #' 
-#' @name fun-package
+#' @name fun
 #' @docType package
 NULL
 
