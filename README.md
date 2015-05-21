@@ -28,6 +28,7 @@ to play:            | description
   * [Trace path](#trace-path)
   * [Bubble sort](#bubble-sort)
   * [Calvin and Hobbes](#calvin-and-hobbes)
+  * [Happy numbers](#happy-numbers)
 
 ----------------
 
@@ -225,3 +226,20 @@ ch('hobbes')
 
 <img src="https://raw.githubusercontent.com/raredd/fun/master/figs/h.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
+### Happy numbers
+
+```r
+is.happy(20)
+```
+
+```
+[1] "20 is sad :["
+```
+
+```r
+is.happy(19)
+```
+
+```
+[1] "19 is happy! :}"
+```
