@@ -95,7 +95,7 @@ collatz(19)
 ## Nth iteration: 4
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/c1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(1161)
@@ -108,7 +108,7 @@ collatz(1161)
 ## Nth iteration: 35
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/c2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(1618, stoptime = TRUE)
@@ -124,7 +124,7 @@ collatz(1618, stoptime = TRUE)
 ##  1 2 3 6 7 9 18 25 27 54 73 97 129 171 231 313 327 649 703 871 1161
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/c3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 collatz(5005, stoptime = TRUE)
@@ -140,7 +140,7 @@ collatz(5005, stoptime = TRUE)
 ##  1 2 3 6 7 9 18 25 27 54 73 97 129 171 231 313 327 649 703 871 1161 2223 2463 2919 3711
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/c4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ----------------
 
@@ -174,28 +174,28 @@ trace_path(lens = seq(0, 1,  length.out = 200),
            turn = rep(pi/2 * (-1 + 1/200), 200))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/t1.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace_path(lens = seq(1, 10, length.out = 1000),
            turn = rep(2 * pi / 10, 1000))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/t2.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace_path(lens = seq(0, 1,  length.out = 500),
            turn = seq(0, pi, length.out = 500))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/t3.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
            turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/t4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/t4.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 
 #### (the following have absolutely no use, I agree)
@@ -206,11 +206,11 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 bubble_sort(round(runif(100, 0, 100)))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs1.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs1.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs2.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs2.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
 
 ### Calvin and Hobbes
 
@@ -218,13 +218,13 @@ bubble_sort(round(runif(100, 0, 100)))
 ch('calvin')
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/c.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/c.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ```r
 ch('hobbes')
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/figs/h.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/h.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ### Happy numbers
 

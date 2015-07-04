@@ -1,0 +1,33 @@
+## deck of cards
+
+```{r}
+deck <- list(hearts   = list(color = 'red', symbol = -0x2665L,
+                             values = c('A', 2:10, 'J', 'Q', 'K')),
+             diamonds = list(color = 'red', symbol = -0x2666L,
+                             values = c('A', 2:10, 'J', 'Q', 'K')),
+             clubs    = list(color = 'black', symbol = -0x2663L,
+                             values = c('A', 2:10, 'J', 'Q', 'K')),
+             spades   = list(color = 'black', symbol = -0x2660L,
+                             values = c('A', 2:10, 'J', 'Q', 'K')))
+
+plot_card <- function(x, y, card = card <- sample(52, size = 1)) {
+  suit <- names(deck[rep(1:4, each = 13)[card]])
+  card <- rep(deck[[suit]]$values, 4)[card]
+  col <- deck[[suit]]$color
+  sym <- deck[[suit]]$symbol
+  points(x, y, pch = sym, col = col, xpd = NA, cex = 1.5)
+  text(x, y, labels = card, col = col, xpd = NA, pos = 2)
+  invisible(list(suit = suit, value = card, color = col))
+}
+```
+
+```{r, results='hide'}
+plot.new()
+plot_card(.5, .5, 1)
+
+plot.window(c(1,4), c(1,13))
+v <- Vectorize(plot_card)
+
+par(cex = 1.2)
+v(rep(1:4, each = 13), rep(13:1, 4), 1:52)
+```

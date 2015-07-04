@@ -1,17 +1,17 @@
-games 0.1.2
+fun 0.1.2
 -----------
   * added bubble_sort, fibonacci, golden
 
-games 0.1.2
+fun 0.1.2
 -----------
   * added collatz and trace_path
   * added visualizations
 
-games 0.1.1
+fun 0.1.1
 -----------
   * added witchcraft and sparkbar
   * R CMD check
 
-games 0.1.0
+fun 0.1.0
 -----------
   * initial build
