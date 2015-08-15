@@ -1,6 +1,10 @@
+fun 42.0
+----------
+  * passed R CMD check
+
 fun 0.1.2
 -----------
-  * added bubble_sort, fibonacci, golden
+  * added bubble_sort, fibonacci, fibonacci2, ch, golden, is.happy
 
 fun 0.1.2
 -----------

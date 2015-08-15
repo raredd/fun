@@ -1,11 +1,14 @@
 Package: fun
 Type: Package
 Title: fun with R
-Version: 0.1.3
+Version: 42.0
 Author: Yihui Xie, Taiyun Wei, Yixuan Qiu, Robert Redd
 Maintainer: Robert Redd <raredd01@gmail.com>
 Description: This is a collection of games and other stuff written in R.
-License: GPL-3
+Imports:
+  ggplot2,
+  grid
+License: GPL-2
 LazyData: yes
 URL: https://github.com/raredd/fun
 Roxygen: list(wrap = FALSE)
