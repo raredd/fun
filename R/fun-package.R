@@ -4,11 +4,5 @@
 #' 
 #' @name fun
 #' @docType package
+#' @import ggplot2 grid
 NULL
-
-.onAttach <- function(...) {
-  if (!interactive() || stats::runif(1) > .5)
-    return(invisible())
-  else
-    R()
-}
