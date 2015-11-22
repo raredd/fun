@@ -6,9 +6,10 @@ Author: Yihui Xie, Taiyun Wei, Yixuan Qiu, Robert Redd
 Maintainer: Robert Redd <raredd01@gmail.com>
 Description: This is a collection of games and other stuff written in R.
 Imports:
-  ggplot2,
-  grid
+    ggplot2,
+    grid
 License: GPL-2
 LazyData: yes
 URL: https://github.com/raredd/fun
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.1
