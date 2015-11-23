@@ -1,5 +1,6 @@
 ### miscellaneous stuff
-# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, golden, is.happy
+# sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, fibonnaci2,
+# golden, ch, is.happy
 ###
 
 #' SparkBar generator
@@ -281,13 +282,18 @@ golden <- function(theta) {
 
 #' Calvin and Hobbes
 #' 
-#' Draw Calvin and Hobbes
+#' Draw Calvin and Hobbes.
 #' 
-#' @param who choose a favorite
+#' @param who who, \code{'calvin'} or \code{'hobbes'}
+#' 
 #' @seealso \url{http://www.stolaf.edu/people/olaf/cs125/}
+#' 
+#' @examples
+#' ch()
 #' 
 #' @export
 
+# see ./inst/source/ch_data.R for data
 ch <- function(who) {
   theme_nothing <- function(base_size = 12, base_family = 'Helvetica') {
     theme_bw(base_size = base_size, base_family = base_family) %+replace%
@@ -308,6 +314,7 @@ ch <- function(who) {
   }
   if (missing(who))
     who <- ifelse(rnorm(1) > 0, 'calvin', 'hobbes')
+  source(system.file('source', 'ch_data.R', package = 'fun'))
   switch(who, 
          calvin = f(p0x, p0y),
          hobbes = f(p1x, p1y))
