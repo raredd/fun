@@ -7,10 +7,14 @@
 ch(who)
 }
 \arguments{
-\item{who}{choose a favorite}
+\item{who}{who, \code{'calvin'} or \code{'hobbes'}}
 }
 \description{
-Draw Calvin and Hobbes
+Draw Calvin and Hobbes.
+}
+\examples{
+ch()
+
 }
 \seealso{
 \url{http://www.stolaf.edu/people/olaf/cs125/}
