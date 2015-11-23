@@ -81,7 +81,7 @@ m <- matrix(rbinom(n * n, 1, 0.3), n)
 plot(play_gol(m))
 
 plot(play_gol(m, rotate = TRUE, scale = TRUE),
- col = c('white','red','yellow','blue','white'))
+     col = c('white','red','yellow','blue','white'))
 
 ## this system file contains some special cases
 source(system.file('source', 'gol_special.R', package = 'fun'))

@@ -67,7 +67,7 @@
 #' plot(play_gol(m))
 #' 
 #' plot(play_gol(m, rotate = TRUE, scale = TRUE),
-#'  col = c('white','red','yellow','blue','white'))
+#'      col = c('white','red','yellow','blue','white'))
 #' 
 #' ## this system file contains some special cases
 #' source(system.file('source', 'gol_special.R', package = 'fun'))
@@ -103,12 +103,16 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
   life <- array(dim = c(dim(mat), gen + 1))
   life[,, 1] <- mat
   
+  cat('\nEvolving\n')
+  pb <- txtProgressBar(max = gen, style = 3, title = 'Evolving')
   while (ii <= gen) {
-    progress(ii, gen)
+    setTxtProgressBar(pb, ii, title = 'Evolving')
     # life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
     life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, rules)
     ii <- ii + 1
   }
+  close(pb)
+  
   life <- structure(list(life = life, scaled = scale, rules = rules),
                     class = 'gol')
   invisible(life)
@@ -231,17 +235,24 @@ plot.gol <- function(x, col, time = 0.1, ...) {
   op <- par(no.readonly = TRUE)
   on.exit(par(op))
   par(mar = c(1,1,1,1))
+  
   col <- if (missing(col))
     c('white','black') else
       if (length(col) > 2L) colorRampPalette(col)(1000) else col
   X <- x$life
   lx <- dim(X)[3]
+  
+  cat('\nPlotting\n')
+  pb <- txtProgressBar(max = lx, style = 3, title = 'Plotting')
   for (ii in seq.int(lx)) {
+    setTxtProgressBar(pb, ii, title = 'Plotting')
     Sys.sleep(time)
-    progress(ii - 1, lx - 1)
     y <- if (x$scaled)
       matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii])) else
         matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
     waffle(y, ...)
   }
+  close(pb)
+  
+  invisible(NULL)
 }
