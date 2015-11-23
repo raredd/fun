@@ -7,9 +7,6 @@
 #' If \code{size} is specified and \code{z} is \code{NULL}, then the
 #' function will generate a solvable sliding puzzle.
 #' 
-#' @usage
-#' sliding_puzzle(size = c(3, 3), bg = "lightblue", z)
-#' 
 #' @param size two dimensional vector, the size of sliding puzzle. Note: the 
 #' element of \code{size} must be greater than 1.
 #' @param bg the background color of blocks.

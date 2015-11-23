@@ -6,11 +6,6 @@
 #' its four neighbors will switch their status. 
 #' 
 #' Your mission is to turn off all the lights.
-#' 
-#' @usage
-#' lights_out(width = 5, height = 5, steps = 3, cheat = FALSE, 
-#'            col.off = 'black', col.on = 'white', 
-#'            col.frame = 'lightblue', seed)
 #'
 #' @param width number of lights in x-axis
 #' @param height number of lights in y-axis

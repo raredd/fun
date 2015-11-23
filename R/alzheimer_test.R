@@ -1,15 +1,8 @@
 #' Alzheimer's test
 #'
-#' @description
-#' Try to find the character that doesn't belong. Search for the letter N in 
-#' 300 Ms; find one 6 in 300 9s; etc.
-#'
-#' Follow the instructions, and find peace of mind.
-#' 
-#' @usage
-#' alzheimer_test(char1 = c('9', 'O', 'M', 'I', 'F', 'D'), 
-#'                char2 = c('6', 'C', 'N', 'T', 'E', 'O'), 
-#'                nr = 10, nc = 30, seed, ...)
+#' Try to find the character that doesn't belong. Search for the letter N in
+#' 300 Ms; find one 6 in 300 9s; etc. Follow the instructions, and find peace
+#' of mind.
 #' 
 #' @param char1 the background character
 #' @param char2 the character to be found out

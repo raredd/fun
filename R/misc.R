@@ -3,6 +3,7 @@
 # golden, ch, is.happy
 ###
 
+
 #' SparkBar generator
 #' 
 #' Generates a sparkbar from a sequence of numbers.
@@ -50,8 +51,6 @@ spark <- function(...) {
 #' r
 #' 
 #' \code{R}
-#' 
-#' @usage R()
 #' 
 #' @export
 

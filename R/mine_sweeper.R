@@ -3,9 +3,6 @@
 #' The controls should be familiar to you: click the left mouse button to dig 
 #' in an area, and right button to mark or unmark the area with flags.
 #' 
-#' @usage 
-#' mine_sweeper(level = 'beginner', width, height, mines, cheat = FALSE, seed)
-#' 
 #' @param level skill level, one of 'beginner', 'intermediate', 'advanced',
 #' 'expert', or 'insane'; custom grids can also be made by supplying all of the
 #' \code{width}, \code{height}, and \code{mines} arguments

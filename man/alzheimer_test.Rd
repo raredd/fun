@@ -4,9 +4,8 @@
 \alias{alzheimer_test}
 \title{Alzheimer's test}
 \usage{
-alzheimer_test(char1 = c('9', 'O', 'M', 'I', 'F', 'D'), 
-               char2 = c('6', 'C', 'N', 'T', 'E', 'O'), 
-               nr = 10, nc = 30, seed, ...)
+alzheimer_test(char1 = c("9", "O", "M", "I", "F", "D"), char2 = c("6", "C",
+  "N", "T", "E", "O"), nr = 10, nc = 30, seed, ...)
 }
 \arguments{
 \item{char1}{the background character}
@@ -26,10 +25,9 @@ If at least one test item has been passed, a data.frame
 will be returned telling the result of the test.
 }
 \description{
-Try to find the character that doesn't belong. Search for the letter N in 
-300 Ms; find one 6 in 300 9s; etc.
-
-Follow the instructions, and find peace of mind.
+Try to find the character that doesn't belong. Search for the letter N in
+300 Ms; find one 6 in 300 9s; etc. Follow the instructions, and find peace
+of mind.
 }
 \note{
 Don't be too serious about this test. I'm no doctor, but I

@@ -4,9 +4,8 @@
 \alias{lights_out}
 \title{Lights out}
 \usage{
-lights_out(width = 5, height = 5, steps = 3, cheat = FALSE, 
-           col.off = 'black', col.on = 'white', 
-           col.frame = 'lightblue', seed)
+lights_out(width = 5, height = 5, steps = 3, cheat = FALSE,
+  col.off = "black", col.on = "white", col.frame = "lightblue", seed)
 }
 \arguments{
 \item{width}{number of lights in x-axis}

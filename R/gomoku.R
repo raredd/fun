@@ -7,8 +7,6 @@
 #' winner is the first player to get an unbroken row of five stones 
 #' horizontally, vertically, or diagonally.
 #' 
-#' @usage gomoku(n = 19)
-#' 
 #' @param n the number of rows and columns in the board (default is 19 and 
 #' generates the standard board)
 #' 

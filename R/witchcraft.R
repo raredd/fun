@@ -2,8 +2,6 @@
 #' 
 #' Pick boxes in the correct sequential order to win a prize.
 #' 
-#' @usage witchcraft(level = 1, seed)
-#' 
 #' @param level difficulty; choose levels 0 (easy) to 3 (difficult)
 #' @param seed seed; see \code{\link{set.seed}}
 #' 
