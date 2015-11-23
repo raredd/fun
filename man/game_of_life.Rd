@@ -7,7 +7,8 @@
 \alias{plot.gol}
 \title{Conway's Game of Life}
 \usage{
-play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE)
+play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
+  rules = "conway")
 
 \method{plot}{gol}(x, col, time = 0.1, ...)
 }
@@ -20,10 +21,14 @@ play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE)
 
 \item{scale}{logical; neighbor scaling; see details}
 
+\item{rules}{character string specifying the rule set to use; choices are
+\code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'}}
+
 \item{x}{\code{gol} object, the result of \code{play_gol}}
 
 \item{col}{a vector of two or more colors if \code{scale} is \code{TRUE};
-otherwise, a vector of length two}
+otherwise, a vector of length two with the colors for live and dead cells,
+respectively}
 
 \item{time}{length of pause between generations}
 
@@ -34,13 +39,13 @@ further to \code{\link{par}}; see details}
 A simulation of cellular automaton devised by mathematician John Horton
 Conway. The life cycle is determined by the initial state matrix,
 \code{mat}, and will evolve for \code{gen} generations. \code{plot.gol}
-loops through all generation states to display the evolution.
+loops through all generation states to display the evolution over time.
 }
 \details{
 Conway's Game of Life, or Life, consists of a grid of cells which have two
 states at initiation, alive or dead, represented by 1s and 0s, respectively.
 The evolution of these cells is determined by the eight neighboring cells
-according to the following rules which are applied simultaneously to every
+according to the following rules which are applied simultaneously to each
 cell:
 
 \enumerate{
@@ -56,12 +61,12 @@ as if by reproduction.}
 
 There are two methods to calculate the neighbors for individual cells. The
 default method (\code{rotate = TRUE}) uses a matrix rotation and is much
-faster than the looping method \code{rotate = FALSE}.
+faster than the looping method (\code{rotate = FALSE}).
 
-If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled between
-to \code{[0,1]} giving closer to a distribution of the neighbor count. This
-is useful when \code{col} is given as a vector of colors which is converted
-to a continuous scale via \code{\link{colorRampPalette}}.
+If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
+\code{[0,1]} giving closer to a distribution of the neighbor count. This is
+useful when \code{col} is given as a vector of three or more colors which
+is converted to a continuous scale via \code{\link{colorRampPalette}}.
 
 The resulting plot is created with \code{\link[rawr]{waffle}}, a non
 exported function which can be accessed using \code{fun:::waffle}. Full
@@ -89,6 +94,10 @@ plot(play_gol(glider, 50))
 plot(play_gol(invader, 20))
 plot(play_gol(tumbler))
 plot(play_gol(glider_gun, 200))
+
+## alternative rules
+plot(play_gol(ladder, rules = 'life_without_death'))
+plot(play_gol(glider, 50, rules = 'day_and_night'))
 }
 
 }

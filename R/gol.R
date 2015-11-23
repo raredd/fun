@@ -9,12 +9,12 @@
 #' A simulation of cellular automaton devised by mathematician John Horton
 #' Conway. The life cycle is determined by the initial state matrix,
 #' \code{mat}, and will evolve for \code{gen} generations. \code{plot.gol}
-#' loops through all generation states to display the evolution.
+#' loops through all generation states to display the evolution over time.
 #' 
 #' Conway's Game of Life, or Life, consists of a grid of cells which have two
 #' states at initiation, alive or dead, represented by 1s and 0s, respectively.
 #' The evolution of these cells is determined by the eight neighboring cells
-#' according to the following rules which are applied simultaneously to every
+#' according to the following rules which are applied simultaneously to each
 #' cell:
 #' 
 #' \enumerate{
@@ -30,12 +30,12 @@
 #' 
 #' There are two methods to calculate the neighbors for individual cells. The
 #' default method (\code{rotate = TRUE}) uses a matrix rotation and is much
-#' faster than the looping method \code{rotate = FALSE}.
+#' faster than the looping method (\code{rotate = FALSE}).
 #' 
-#' If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled between
-#' to \code{[0,1]} giving closer to a distribution of the neighbor count. This
-#' is useful when \code{col} is given as a vector of colors which is converted
-#' to a continuous scale via \code{\link{colorRampPalette}}.
+#' If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
+#' \code{[0,1]} giving closer to a distribution of the neighbor count. This is
+#' useful when \code{col} is given as a vector of three or more colors which
+#' is converted to a continuous scale via \code{\link{colorRampPalette}}.
 #' 
 #' The resulting plot is created with \code{\link[rawr]{waffle}}, a non
 #' exported function which can be accessed using \code{fun:::waffle}. Full
@@ -45,9 +45,12 @@
 #' @param gen number of generations to simulate
 #' @param rotate logical; neighbor calculator; see details
 #' @param scale logical; neighbor scaling; see details
+#' @param rules character string specifying the rule set to use; choices are
+#' \code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'}
 #' @param x \code{gol} object, the result of \code{play_gol}
 #' @param col a vector of two or more colors if \code{scale} is \code{TRUE};
-#' otherwise, a vector of length two
+#' otherwise, a vector of length two with the colors for live and dead cells,
+#' respectively
 #' @param time length of pause between generations
 #' @param ... additional parameters passed to \code{\link[rawr]{waffle}} or
 #' further to \code{\link{par}}; see details
@@ -77,6 +80,10 @@
 #' plot(play_gol(invader, 20))
 #' plot(play_gol(tumbler))
 #' plot(play_gol(glider_gun, 200))
+#' 
+#' ## alternative rules
+#' plot(play_gol(ladder, rules = 'life_without_death'))
+#' plot(play_gol(glider, 50, rules = 'day_and_night'))
 #' }
 #' 
 #' @aliases gol
@@ -85,27 +92,31 @@ NULL
 
 #' @rdname game_of_life
 #' @export
-play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE) {
+play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
+                     rules = 'conway') {
   stopifnot(is.matrix(mat))
   stopifnot(all(mat %in% 0:1))
+  rules <- match.arg(rules, c('conway','life_without_death','day_and_night'),
+                     several.ok = FALSE)
   
   ii <- 1
   life <- vector('list', gen + 1)
   life[[ii]] <- mat
   
   while (ii <= gen) {
-    try(rawr::progress(ii, gen), silent = TRUE)
-    life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale)
+    progress(ii, gen)
+    life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
     ii <- ii + 1
   }
   
-  attributes(life) <- list(class = 'gol', scaled = scale)
+  attributes(life) <- list(class = 'gol', scaled = scale, rules = rules)
   invisible(life)
 }
 
-gol_step <- function(mat, rotate = TRUE, scale = FALSE) {
+gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules) {
   
-  one_cycle <- function(x, y) {
+  ## rule sets
+  conway_rules <- function(x, y) {
     ## x,y integer vectors of alive/dead (x) and neighbor count (y)
     stopifnot(length(x) == length(y))
     xl <- as.logical(x)       ## poor, wretched souls
@@ -117,6 +128,28 @@ gol_step <- function(mat, rotate = TRUE, scale = FALSE) {
     
     x
   }
+  
+  lwod_rules <- function(x, y) {
+    stopifnot(length(x) == length(y))
+    xl <- as.logical(x)
+    x[xl  & y %in% 2:3] <- 1
+    x[!xl & y == 3]     <- 1
+    x
+  }
+  
+  dn_rules <- function(x, y) {
+    stopifnot(length(x) == length(y))
+    xl <- as.logical(x)
+    x[!xl & y %in% c(3,6:8)]   <- 1
+    x[xl  & y %in% c(3:4,6:8)] <- 1
+    x
+  }
+  
+  RULES <- switch(rules,
+                  conway = conway_rules,
+                  life_without_death = lwod_rules,
+                  day_and_night = dn_rules,
+                  stop('Invalid rule function'))
 
   rotate_ <- function(mat, scale = scale) {
     nr <- nrow(mat)
@@ -165,11 +198,11 @@ gol_step <- function(mat, rotate = TRUE, scale = FALSE) {
   if (rotate) {
     if (scale)
       return(rotate_(mat, TRUE))
-    matrix(one_cycle(c(mat), c(rotate_(mat, FALSE))), nrow(mat))
+    matrix(RULES(c(mat), c(rotate_(mat, FALSE))), nrow(mat))
   } else {
     if (scale)
       return(matrix(all_neighbors(mat), nrow(mat)))
-    matrix(one_cycle(c(mat), all_neighbors(mat)), nrow(mat))
+    matrix(RULES(c(mat), all_neighbors(mat)), nrow(mat))
   } 
 }
 
@@ -201,7 +234,7 @@ plot.gol <- function(x, col, time = 0.1, ...) {
       if (length(col) > 2L) colorRampPalette(col)(1000) else col
   for (ii in seq_along(x)) {
     Sys.sleep(time)
-    try(rawr::progress(ii - 1, length(x) - 1), silent = TRUE)
+    progress(ii - 1, length(x) - 1)
     X <- if (attr(x, 'scaled'))
       matrix(col[round(x[[ii]] * 1000 + 1L)], nrow(x[[ii]]))
     else matrix(col[x[[ii]] + 1L], nrow(x[[ii]]))
