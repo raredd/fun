@@ -100,16 +100,17 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
                      several.ok = FALSE)
   
   ii <- 1
-  life <- vector('list', gen + 1)
-  life[[ii]] <- mat
+  life <- array(dim = c(dim(mat), gen + 1))
+  life[,, 1] <- mat
   
   while (ii <= gen) {
     progress(ii, gen)
-    life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
+    # life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
+    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, rules)
     ii <- ii + 1
   }
-  
-  attributes(life) <- list(class = 'gol', scaled = scale, rules = rules)
+  life <- structure(list(life = life, scaled = scale, rules = rules),
+                    class = 'gol')
   invisible(life)
 }
 
@@ -226,18 +227,21 @@ waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
 #' @rdname game_of_life
 #' @export
 plot.gol <- function(x, col, time = 0.1, ...) {
+  stopifnot(inherits(x, 'gol'))
   op <- par(no.readonly = TRUE)
   on.exit(par(op))
   par(mar = c(1,1,1,1))
   col <- if (missing(col))
     c('white','black') else
       if (length(col) > 2L) colorRampPalette(col)(1000) else col
-  for (ii in seq_along(x)) {
+  X <- x$life
+  lx <- dim(X)[3]
+  for (ii in seq.int(lx)) {
     Sys.sleep(time)
-    progress(ii - 1, length(x) - 1)
-    X <- if (attr(x, 'scaled'))
-      matrix(col[round(x[[ii]] * 1000 + 1L)], nrow(x[[ii]]))
-    else matrix(col[x[[ii]] + 1L], nrow(x[[ii]]))
-    waffle(X, ...)
+    progress(ii - 1, lx - 1)
+    y <- if (x$scaled)
+      matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii])) else
+        matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
+    waffle(y, ...)
   }
 }
