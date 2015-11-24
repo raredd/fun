@@ -41,12 +41,19 @@
 #' exported function which can be accessed using \code{fun:::waffle}. Full
 #' documentation and usage can be found in the \pkg{rawr} package version.
 #' 
+#' Additionally, a custom rule function can be passed using the \code{rules}
+#' argument. This function should have two arguments: an integer matrix
+#' representing the current cell state and an integer matrix of the neighbor
+#' count of these cells. The function should apply a set of rules and return
+#' an integer matrix having the same dimensions as the initial state.
+#' 
 #' @param mat a \code{{0,1}} integer matrix
 #' @param gen number of generations to simulate
 #' @param rotate logical; neighbor calculator; see details
 #' @param scale logical; neighbor scaling; see details
 #' @param rules character string specifying the rule set to use; choices are
-#' \code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'}
+#' \code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'};
+#' alternatively, a rule function can be given, see details
 #' @param x \code{gol} object, the result of \code{play_gol}
 #' @param col a vector of two or more colors if \code{scale} is \code{TRUE};
 #' otherwise, a vector of length two with the colors for live and dead cells,
@@ -84,6 +91,16 @@
 #' ## alternative rules
 #' plot(play_gol(ladder, rules = 'life_without_death'))
 #' plot(play_gol(glider, 50, rules = 'day_and_night'))
+#' plot(play_gol(bowtie, 30, rules = 'high_life'))
+#' 
+#' ## custom rules
+#' my_rule <- function(X, ...) {
+#'   x <- c(X)
+#'   y <- fun:::rotate_(X, FALSE)
+#'   x[sample(seq_along(x), max(y))] <- 0  ## kill random cells
+#'   matrix(x, nrow(X))
+#' }
+#' plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
 #' }
 #' 
 #' @aliases gol
@@ -96,8 +113,16 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
                      rules = 'conway') {
   stopifnot(is.matrix(mat))
   stopifnot(all(mat %in% 0:1))
-  rules <- match.arg(rules, c('conway','life_without_death','day_and_night'),
-                     several.ok = FALSE)
+  
+  RULES <- if (is.function(rules)) {
+    if (any(dim(mat) != dim(rules(mat, rep(0, length(mat))))))
+      stop('Improper rule function')
+    rules
+  } else {
+    match.arg(rules, c('conway','life_without_death','day_and_night',
+                       'high_life'),
+              several.ok = FALSE)
+  }
   
   ii <- 1
   life <- array(dim = c(dim(mat), gen + 1))
@@ -108,106 +133,32 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
   while (ii <= gen) {
     setTxtProgressBar(pb, ii, title = 'Evolving')
     # life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
-    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, rules)
+    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, RULES)
     ii <- ii + 1
   }
   close(pb)
   
-  life <- structure(list(life = life, scaled = scale, rules = rules),
+  life <- structure(list(life = life, scaled = scale, rules = RULES),
                     class = 'gol')
   invisible(life)
 }
 
 gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules) {
-  
-  ## rule sets
-  conway_rules <- function(x, y) {
-    ## x,y integer vectors of alive/dead (x) and neighbor count (y)
-    stopifnot(length(x) == length(y))
-    xl <- as.logical(x)       ## poor, wretched souls
-    
-    x[xl  & y < 2]      <- 0  ## under-population
-    x[xl  & y %in% 2:3] <- 1  ## x lives
-    x[!xl & y == 3]     <- 1  ## reproduction
-    x[xl  & y >= 4]     <- 0  ## over-population
-    
-    x
-  }
-  
-  lwod_rules <- function(x, y) {
-    stopifnot(length(x) == length(y))
-    xl <- as.logical(x)
-    x[xl  & y %in% 2:3] <- 1
-    x[!xl & y == 3]     <- 1
-    x
-  }
-  
-  dn_rules <- function(x, y) {
-    stopifnot(length(x) == length(y))
-    xl <- as.logical(x)
-    x[!xl & y %in% c(3,6:8)]   <- 1
-    x[xl  & y %in% c(3:4,6:8)] <- 1
-    x
-  }
-  
-  RULES <- switch(rules,
-                  conway = conway_rules,
-                  life_without_death = lwod_rules,
-                  day_and_night = dn_rules,
-                  stop('Invalid rule function'))
-
-  rotate_ <- function(mat, scale = scale) {
-    nr <- nrow(mat)
-    nc <- ncol(mat)
-    padr <- rep(0, nr)
-    padc <- rep(0, nc)
-    
-    l <- list(
-      u = rbind(padc, mat[-nr, ]),
-      d = rbind(mat[-1, ], padc),
-      l = cbind(padr, mat[, -nc]),
-      r = cbind(mat[, -1], padr),
-      
-      ul = rbind(padc, cbind(padr[-1], mat[-nr, -nc])),
-      ur = rbind(padc, cbind(mat[-nr, -1], padr[-1])),
-      dl = rbind(cbind(padr[-1], mat[-1, -nc]), padc),
-      dr = rbind(cbind(mat[-1, -1], padr[-1]), padc)
-    )
-    rot <- `dimnames<-`(Reduce('+', l), NULL)
-    if (scale)
-      rot / max(rot) else rot
-  }
-  
-  ## rotate_ does the job of these three fns which are slow af
-  dir <- list(u = c(-1, 0), d = c(1, 0), l = c(0, -1), r = c(0, 1))
-  dir <- c(dir, list(ul = c(-1,-1), ur = c(-1,1), dl = c(1,-1), dr = c(1,1)))
-  try0 <- function(x)
-    tryCatch(if (length(x)) as.integer(x) else 0L, error = function(e) 0L)
-  
-  one_neighbor <- function(mat, rc) {
-    ## get count of neighbors for one (rc = c(row_index, column_index))
-    # one_neighbor(mat, c(2,4))
-    nn <- vapply(seq_along(dir), function(x) {
-      d <- dir[[x]]
-      try0(mat[rc[1] + d[1], rc[2] + d[2]])
-    }, integer(1))
-    sum(nn)
-  }
-  
-  all_neighbors <- function(mat) {
-    ## get count of neighbors for all
-    idx <- cbind(c(row(mat)), c(col(mat)))
-    vapply(1:nrow(idx), function(x) one_neighbor(mat, idx[x, ]), integer(1))
-  }
-  
+  RULES <- if (is.function(rules))
+    rules else switch(rules,
+                      conway = conway_rules,
+                      life_without_death = lwod_rules,
+                      day_and_night = dn_rules,
+                      high_life = hl_rules,
+                      stop('Invalid rule function'))
   if (rotate) {
     if (scale)
       return(rotate_(mat, TRUE))
-    matrix(RULES(c(mat), c(rotate_(mat, FALSE))), nrow(mat))
+    RULES(mat, rotate_(mat, FALSE))
   } else {
     if (scale)
       return(matrix(all_neighbors(mat), nrow(mat)))
-    matrix(RULES(c(mat), all_neighbors(mat)), nrow(mat))
+    RULES(mat, all_neighbors(mat))
   } 
 }
 
@@ -255,4 +206,93 @@ plot.gol <- function(x, col, time = 0.1, ...) {
   close(pb)
   
   invisible(NULL)
+}
+
+## rule sets
+conway_rules <- function(X, Y) {
+  ## x,y integer matrices of alive/dead (x) and neighbor count (y)
+  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  xl <- as.logical(x)       ## poor, wretched souls
+  
+  x[xl  & y < 2]      <- 0  ## under-population
+  x[xl  & y %in% 2:3] <- 1  ## x lives
+  x[!xl & y == 3]     <- 1  ## reproduction
+  x[xl  & y >= 4]     <- 0  ## over-population
+  
+  matrix(x, nrow(X))
+}
+
+hl_rules <- function(X, Y) {
+  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  xl <- as.logical(x)
+  
+  x[xl  & y < 2]      <- 0  ## under-population
+  x[xl  & y %in% 2:3] <- 1  ## x lives
+  x[!xl & y == 3]     <- 1  ## reproduction
+  x[xl  & y >= 4]     <- 0  ## over-population
+  x[!xl & y == 6]     <- 1  ## additional rule to conway for hl
+  
+  matrix(x, nrow(X))
+}
+
+lwod_rules <- function(X, Y) {
+  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  xl <- as.logical(x)
+  x[xl  & y %in% 2:3] <- 1
+  x[!xl & y == 3]     <- 1
+  matrix(x, nrow(X))
+}
+
+dn_rules <- function(X, Y) {
+  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  xl <- as.logical(x)
+  x[!xl & y %in% c(3,6:8)]   <- 1
+  x[xl  & y %in% c(3:4,6:8)] <- 1
+  matrix(x, nrow(X))
+}
+
+rotate_ <- function(mat, scale = scale) {
+  nr <- nrow(mat)
+  nc <- ncol(mat)
+  padr <- rep(0, nr)
+  padc <- rep(0, nc)
+  
+  l <- list(
+    u = rbind(padc, mat[-nr, ]),
+    d = rbind(mat[-1, ], padc),
+    l = cbind(padr, mat[, -nc]),
+    r = cbind(mat[, -1], padr),
+    
+    ul = rbind(padc, cbind(padr[-1], mat[-nr, -nc])),
+    ur = rbind(padc, cbind(mat[-nr, -1], padr[-1])),
+    dl = rbind(cbind(padr[-1], mat[-1, -nc]), padc),
+    dr = rbind(cbind(mat[-1, -1], padr[-1]), padc)
+  )
+  rot <- `dimnames<-`(Reduce('+', l), NULL)
+  if (scale)
+    rot / max(rot) else rot
+}
+
+## rotate_ does the job of these three fns which are slow af
+dir <- list(u = c(-1, 0), d = c(1, 0), l = c(0, -1), r = c(0, 1))
+dir <- c(dir, list(ul = c(-1,-1), ur = c(-1,1), dl = c(1,-1), dr = c(1,1)))
+try0 <- function(x)
+  tryCatch(if (length(x)) as.integer(x) else 0L, error = function(e) 0L)
+
+one_neighbor <- function(mat, rc) {
+  ## get count of neighbors for one (rc = c(row_index, column_index))
+  # one_neighbor(mat, c(2,4))
+  nn <- vapply(seq_along(dir), function(x) {
+    d <- dir[[x]]
+    try0(mat[rc[1] + d[1], rc[2] + d[2]])
+  }, integer(1))
+  sum(nn)
+}
+
+all_neighbors <- function(mat) {
+  ## get count of neighbors for all
+  idx <- cbind(c(row(mat)), c(col(mat)))
+  m <- vapply(1:nrow(idx), function(x)
+    one_neighbor(mat, idx[x, ]), integer(1))
+  matrix(m, nrow(mat))
 }
