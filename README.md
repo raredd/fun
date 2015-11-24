@@ -29,6 +29,7 @@ to play:            | description
   * [Bubble sort](#bubble-sort)
   * [Calvin and Hobbes](#calvin-and-hobbes)
   * [Happy numbers](#happy-numbers)
+  * [Game of Life](#game-of-life)
 
 ----------------
 
@@ -243,3 +244,19 @@ is.happy(19)
 ```
 [1] "19 is happy! :}"
 ```
+
+### Game of Life
+
+An implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). Using the `rules` argument, one can specify a rule set for the cellular automation or supply a custom function.
+
+This package also provides several special cases of initial states for the built-in rule functions.
+
+```r
+## load some initial states
+source(system.file('source', 'gol_special.R', package = 'fun'))
+
+## simulate life
+plot(play_gol(glider_gun, 200))
+```
+
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/glider_gun.png" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" />
