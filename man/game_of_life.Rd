@@ -22,7 +22,8 @@ play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
 \item{scale}{logical; neighbor scaling; see details}
 
 \item{rules}{character string specifying the rule set to use; choices are
-\code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'}}
+\code{'conway'}, \code{'life_without_death'}, and \code{'day_and_night'};
+alternatively, a rule function can be given, see details}
 
 \item{x}{\code{gol} object, the result of \code{play_gol}}
 
@@ -71,6 +72,12 @@ is converted to a continuous scale via \code{\link{colorRampPalette}}.
 The resulting plot is created with \code{\link[rawr]{waffle}}, a non
 exported function which can be accessed using \code{fun:::waffle}. Full
 documentation and usage can be found in the \pkg{rawr} package version.
+
+Additionally, a custom rule function can be passed using the \code{rules}
+argument. This function should have two arguments: an integer matrix
+representing the current cell state and an integer matrix of the neighbor
+count of these cells. The function should apply a set of rules and return
+an integer matrix having the same dimensions as the initial state.
 }
 \examples{
 \dontrun{
@@ -98,6 +105,16 @@ plot(play_gol(glider_gun, 200))
 ## alternative rules
 plot(play_gol(ladder, rules = 'life_without_death'))
 plot(play_gol(glider, 50, rules = 'day_and_night'))
+plot(play_gol(bowtie, 30, rules = 'high_life'))
+
+## custom rules
+my_rule <- function(X, ...) {
+  x <- c(X)
+  y <- fun:::rotate_(X, FALSE)
+  x[sample(seq_along(x), max(y))] <- 0  ## kill random cells
+  matrix(x, nrow(X))
+}
+plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
 }
 
 }
