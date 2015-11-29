@@ -18,8 +18,8 @@
 #' cell:
 #' 
 #' \enumerate{
-#' \item{Any live cell with fewer than two live neighbours dies, as if caused by
-#' under-population.}
+#' \item{Any live cell with fewer than two live neighbours dies, as if caused
+#' by under-population.}
 #' \item{Any live cell with two or three live neighbours lives on to the next
 #' generation.}
 #' \item{Any live cell with more than three live neighbours dies, as if by
@@ -28,12 +28,12 @@
 #' as if by reproduction.}
 #' }
 #' 
-#' There are two methods to calculate the neighbors for individual cells. The
-#' default method (\code{rotate = TRUE}) uses a matrix rotation and is much
-#' faster than the looping method (\code{rotate = FALSE}).
+#' This function has two methods to calculate the neighbors for individual
+#' cells. The default method (\code{rotate = TRUE}) uses a matrix rotation and
+#' is much faster than the looping method (\code{rotate = FALSE}).
 #' 
 #' If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
-#' \code{[0,1]} giving closer to a distribution of the neighbor count. This is
+#' \code{[0,1]} giving a smoother distribution of the neighbor count. This is
 #' useful when \code{col} is given as a vector of three or more colors which
 #' is converted to a continuous scale via \code{\link{colorRampPalette}}.
 #' 
@@ -42,10 +42,15 @@
 #' documentation and usage can be found in the \pkg{rawr} package version.
 #' 
 #' Additionally, a custom rule function can be passed using the \code{rules}
-#' argument. This function should have two arguments: an integer matrix
-#' representing the current cell state and an integer matrix of the neighbor
-#' count of these cells. The function should apply a set of rules and return
-#' an integer matrix having the same dimensions as the initial state.
+#' argument. This function should have three arguments: an integer matrix
+#' representing the current cell state, an integer matrix of the neighbor
+#' count of these cells, and and integer representing the iteration count.
+#' The function should apply a set of rules and return an integer matrix
+#' having the same dimensions as the initial state.
+#' 
+#' Note that this function will be checked for input/output consistency only,
+#' so all some or all of these parameters may be ignored so long as the check
+#' passes; see examples.
 #' 
 #' @param mat a \code{{0,1}} integer matrix
 #' @param gen number of generations to simulate
@@ -93,6 +98,7 @@
 #' plot(play_gol(glider, 50, rules = 'day_and_night'))
 #' plot(play_gol(bowtie, 30, rules = 'high_life'))
 #' 
+#' 
 #' ## custom rules
 #' my_rule <- function(X, ...) {
 #'   x <- c(X)
@@ -101,6 +107,28 @@
 #'   matrix(x, nrow(X))
 #' }
 #' plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
+#' 
+#' 
+#' ## rule using time (current iteration)
+#' my_rule <- function(X, Y, Z) {
+#'   x <- c(X)
+#'   y <- fun:::rotate_(X, FALSE)
+#'   z <- Z %% 5 == 0L
+#'   x[sample(seq_along(x), max(y))] <- 0  ## kill random cells
+#'   x[sample(seq_along(x), 5)]      <- 1  ## spontaneous combustion
+#'   matrix(x, nrow(X))
+#' }
+#' plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
+#' 
+#' 
+#' ## rule ignoring inputs
+#' my_rule <- function(...) {
+#'   x <- matrix(sample(c(..1)), nrow(..1))
+#'   x[sample(seq.int(nrow(x)), 1), ] <- 0
+#'   x
+#' }
+#' plot(play_gol(matrix(1, 10, 10), 20, rules = my_rule))
+#' 
 #' }
 #' 
 #' @aliases gol
@@ -115,7 +143,7 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
   stopifnot(all(mat %in% 0:1))
   
   RULES <- if (is.function(rules)) {
-    if (any(dim(mat) != dim(rules(mat, rep(0, length(mat))))))
+    if (any(dim(mat) != dim(rules(mat, rep(0, length(mat)), NULL))))
       stop('Improper rule function')
     rules
   } else {
@@ -132,8 +160,7 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
   pb <- txtProgressBar(max = gen, style = 3, title = 'Evolving')
   while (ii <= gen) {
     setTxtProgressBar(pb, ii, title = 'Evolving')
-    # life[[ii + 1]] <- mat <- gol_step(mat, rotate, scale, rules)
-    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, RULES)
+    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, RULES, ii)
     ii <- ii + 1
   }
   close(pb)
@@ -143,22 +170,22 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
   invisible(life)
 }
 
-gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules) {
+gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
   RULES <- if (is.function(rules))
     rules else switch(rules,
-                      conway = conway_rules,
-                      life_without_death = lwod_rules,
-                      day_and_night = dn_rules,
-                      high_life = hl_rules,
+                      conway = rules_conway_,
+                      life_without_death = rules_lwod_,
+                      day_and_night = rules_dn_,
+                      high_life = rules_hl_,
                       stop('Invalid rule function'))
   if (rotate) {
     if (scale)
       return(rotate_(mat, TRUE))
-    RULES(mat, rotate_(mat, FALSE))
+    RULES(mat, rotate_(mat, FALSE), iteration)
   } else {
     if (scale)
       return(matrix(all_neighbors(mat), nrow(mat)))
-    RULES(mat, all_neighbors(mat))
+    RULES(mat, all_neighbors(mat), iteration)
   } 
 }
 
@@ -209,7 +236,7 @@ plot.gol <- function(x, col, time = 0.1, ...) {
 }
 
 ## rule sets
-conway_rules <- function(X, Y) {
+rules_conway_ <- function(X, Y, Z) {
   ## x,y integer matrices of alive/dead (x) and neighbor count (y)
   stopifnot(length(x <- c(X)) == length(y <- c(Y)))
   xl <- as.logical(x)       ## poor, wretched souls
@@ -222,7 +249,7 @@ conway_rules <- function(X, Y) {
   matrix(x, nrow(X))
 }
 
-hl_rules <- function(X, Y) {
+rules_hl_ <- function(X, Y, Z) {
   stopifnot(length(x <- c(X)) == length(y <- c(Y)))
   xl <- as.logical(x)
   
@@ -235,7 +262,7 @@ hl_rules <- function(X, Y) {
   matrix(x, nrow(X))
 }
 
-lwod_rules <- function(X, Y) {
+rules_lwod_ <- function(X, Y, Z) {
   stopifnot(length(x <- c(X)) == length(y <- c(Y)))
   xl <- as.logical(x)
   x[xl  & y %in% 2:3] <- 1
@@ -243,7 +270,7 @@ lwod_rules <- function(X, Y) {
   matrix(x, nrow(X))
 }
 
-dn_rules <- function(X, Y) {
+rules_dn_ <- function(X, Y, Z) {
   stopifnot(length(x <- c(X)) == length(y <- c(Y)))
   xl <- as.logical(x)
   x[!xl & y %in% c(3,6:8)]   <- 1
