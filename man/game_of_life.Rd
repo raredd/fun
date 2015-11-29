@@ -50,8 +50,8 @@ according to the following rules which are applied simultaneously to each
 cell:
 
 \enumerate{
-\item{Any live cell with fewer than two live neighbours dies, as if caused by
-under-population.}
+\item{Any live cell with fewer than two live neighbours dies, as if caused
+by under-population.}
 \item{Any live cell with two or three live neighbours lives on to the next
 generation.}
 \item{Any live cell with more than three live neighbours dies, as if by
@@ -60,12 +60,12 @@ over-population.}
 as if by reproduction.}
 }
 
-There are two methods to calculate the neighbors for individual cells. The
-default method (\code{rotate = TRUE}) uses a matrix rotation and is much
-faster than the looping method (\code{rotate = FALSE}).
+This function has two methods to calculate the neighbors for individual
+cells. The default method (\code{rotate = TRUE}) uses a matrix rotation and
+is much faster than the looping method (\code{rotate = FALSE}).
 
 If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
-\code{[0,1]} giving closer to a distribution of the neighbor count. This is
+\code{[0,1]} giving a smoother distribution of the neighbor count. This is
 useful when \code{col} is given as a vector of three or more colors which
 is converted to a continuous scale via \code{\link{colorRampPalette}}.
 
@@ -74,10 +74,15 @@ exported function which can be accessed using \code{fun:::waffle}. Full
 documentation and usage can be found in the \pkg{rawr} package version.
 
 Additionally, a custom rule function can be passed using the \code{rules}
-argument. This function should have two arguments: an integer matrix
-representing the current cell state and an integer matrix of the neighbor
-count of these cells. The function should apply a set of rules and return
-an integer matrix having the same dimensions as the initial state.
+argument. This function should have three arguments: an integer matrix
+representing the current cell state, an integer matrix of the neighbor
+count of these cells, and and integer representing the iteration count.
+The function should apply a set of rules and return an integer matrix
+having the same dimensions as the initial state.
+
+Note that this function will be checked for input/output consistency only,
+so all some or all of these parameters may be ignored so long as the check
+passes; see examples.
 }
 \examples{
 \dontrun{
@@ -107,6 +112,7 @@ plot(play_gol(ladder, rules = 'life_without_death'))
 plot(play_gol(glider, 50, rules = 'day_and_night'))
 plot(play_gol(bowtie, 30, rules = 'high_life'))
 
+
 ## custom rules
 my_rule <- function(X, ...) {
   x <- c(X)
@@ -115,6 +121,28 @@ my_rule <- function(X, ...) {
   matrix(x, nrow(X))
 }
 plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
+
+
+## rule using time (current iteration)
+my_rule <- function(X, Y, Z) {
+  x <- c(X)
+  y <- fun:::rotate_(X, FALSE)
+  z <- Z \%\% 5 == 0L
+  x[sample(seq_along(x), max(y))] <- 0  ## kill random cells
+  x[sample(seq_along(x), 5)]      <- 1  ## spontaneous combustion
+  matrix(x, nrow(X))
+}
+plot(play_gol(matrix(1, 10, 10), 50, rules = my_rule))
+
+
+## rule ignoring inputs
+my_rule <- function(...) {
+  x <- matrix(sample(c(..1)), nrow(..1))
+  x[sample(seq.int(nrow(x)), 1), ] <- 0
+  x
+}
+plot(play_gol(matrix(1, 10, 10), 20, rules = my_rule))
+
 }
 
 }
