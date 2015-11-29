@@ -259,4 +259,4 @@ source(system.file('source', 'gol_special.R', package = 'fun'))
 plot(play_gol(glider_gun, 200))
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" />
