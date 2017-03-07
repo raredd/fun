@@ -204,14 +204,11 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 ### Bubble sort
 
 ```r
-bubble_sort(round(runif(100, 0, 100)))
+set.seed(1)
+bubble_sort(runif(100), TRUE)
 ```
 
-<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs1.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
-
-<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs2.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
-
-<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/bs3.png" title="plot of bubble sort" alt="plot of bubble sort" style="display: block; margin: auto;" />
+<div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/bubble_sort/bubble_sort.gif" title="bubble sort example" alt="bubble sort example" style="display: block; margin: auto;" /></div>
 
 ### Calvin and Hobbes
 
@@ -228,6 +225,12 @@ ch('hobbes')
 <img src="https://raw.githubusercontent.com/raredd/fun/master/inst/figs/h.png" title="plot of chunk examples" alt="plot of chunk examples" style="display: block; margin: auto;" />
 
 ### Happy numbers
+
+Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number either equals 1 (where it will stay), or it loops endlessly in a cycle that does not include 1.
+
+Those numbers for which this process ends in 1 are happy numbers, while those that do not end in 1 are unhappy numbers (or sad numbers).
+
+https://en.wikipedia.org/wiki/Happy_number
 
 ```r
 is.happy(20)
@@ -259,4 +262,4 @@ source(system.file('source', 'gol_special.R', package = 'fun'))
 plot(play_gol(glider_gun, 200))
 ```
 
-<div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" /></div>
+<div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/gol/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" /></div>

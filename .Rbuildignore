@@ -1,2 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+
+inst/animate/bubble_sort/css
+inst/animate/bubble_sort/fig
+inst/animate/bubble_sort/js
+
+inst/animate/gol/css
+inst/animate/gol/fig
+inst/animate/gol/js
