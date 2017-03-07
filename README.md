@@ -205,7 +205,7 @@ trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
 
 ```r
 set.seed(1)
-bubble_sort(runif(100), TRUE)
+bubble_sort(runif(100), plot = TRUE)
 ```
 
 <div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/bubble_sort/bubble_sort.gif" title="bubble sort example" alt="bubble sort example" style="display: block; margin: auto;" /></div>
