@@ -58,8 +58,7 @@ alzheimer_test = function(char1 = c('9', 'O', 'M', 'I', 'F', 'D'),
         cat("\nFind it now?\n")
         m = menu(c("Yes! (Input the answer later)", "No... (See the answer later)"))
         tm1 = c(tm1, as.numeric(difftime(Sys.time(), tmp, units = "secs")))
-        ans.true = c(ifelse(idx%%nr[j] == 0, nr[j], idx%%nr[j]),
-            idx%/%nr[j] + 1)
+        ans.true = c(ifelse(idx%%nr[j] == 0, nr[j], idx%%nr[j]), ceiling(idx/nr[j]))
         tmp = Sys.time()
         if (m == 0 | m == 2) {
             cat("\nCharacter \"", char2[j], "\" is at [", ifelse(idx%%nr[j] ==
