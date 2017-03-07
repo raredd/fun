@@ -1,6 +1,7 @@
 ### miscellaneous stuff
 # sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, fibonnaci2,
-# golden, ch, is.happy
+# golden, ch, is.happy, is.prime, is.unary, is.binary, binToDec, decToBin,
+# decToUna
 ###
 
 
@@ -345,3 +346,95 @@ is.happy <- function(x) {
   sprintf('%s is %s', x, ok)
 }
 
+#' Prime numbers
+#' 
+#' Check if a number is prime using a regular expression.
+#' 
+#' @param x an integer
+#' 
+#' @seealso
+#' \code{\link{decToUna}}
+#' 
+#' @references
+#' \url{http://montreal.pm.org/tech/neil_kandalgaonkar.shtml}
+#' 
+#' @examples
+#' x <- 1:100
+#' x[is.prime(x)]
+#' 
+#' @export
+
+is.prime <- function(x) {
+  x <- abs(as.integer(x))
+  !grepl('^1?$|^(11+?)\\1+$', decToUna(x))
+}
+
+#' Nary numbers
+#' 
+#' Convert to, from, or check if a number is unary or binary.
+#' 
+#' @param x a vector to be converted or tested
+#' 
+#' @seealso
+#' \code{\link[=intToBits]{rawConversion}}
+#' 
+#' @examples
+#' x <- 1:100
+#' x_bin <- decToBin(x)
+#' stopifnot(is.binary(x_bin))
+#' 
+#' x_dec <- binToDec(x_bin)
+#' 
+#' x_una <- decToUna(x_dec)
+#' stopifnot(is.unary(x_una))
+#' 
+#' stopifnot(identical(x, x_dec))
+#' 
+#' @name nary
+NULL
+
+#' @rdname nary
+#' @export
+is.unary <- function(x) {
+  gsub('.', '1', x) == x
+}
+
+#' @rdname nary
+#' @export
+is.binary <- function(x) {
+  sci <- getOption('scipen')
+  on.exit(options(scipen = sci))
+  options(scipen = 999)
+  x <- as.character(x)
+  chartr('1', '0', x) == strrep('0', nchar(x))
+}
+
+#' @rdname nary
+#' @export
+binToDec <- Vectorize(function(x) {
+  stopifnot(is.binary(x))
+  x <- strsplit(as.character(x), '')
+  x <- which(rev(unlist(x) == 1L))
+  as.integer(sum(2 ^ (x - 1L)))
+})
+
+#' @rdname nary
+#' @export
+decToBin <- Vectorize(function(x) {
+  x <- abs(as.integer(x))
+  x <- strsplit(paste(rev(intToBits(x))), '')
+  x <- paste(sapply(x, `[[`, 2), collapse = '')
+  as.integer(gsub('^0*', '', x))
+})
+
+#' @rdname nary
+#' @export
+decToUna <- function(x) {
+  s <- sign(x)
+  x <- abs(x)
+  stopifnot(is.integer(x))
+  ## return character instead of integer
+  # Warning: NAs introduced by coercion to integer range
+  # as.integer(strrep('1', x)) * s
+  strrep('1', x)
+}
