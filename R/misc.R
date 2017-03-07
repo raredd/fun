@@ -169,47 +169,76 @@ trace_path <- function(lens, turn) {
 
 #' Bubble sort
 #' 
-#' The bubble sort algorithm iteratively sorts pairs of numbers by swapping 
-#' each pair if unsorted and repeating until all numbers are properly sorted.
+#' The bubble sort swaps neighboring pairs of numbers if not in proper order.
+#' The algorithm is called recursively until all pairs are in order.
 #' 
-#' @param vec a vector of unsorted integers
+#' @param x a vector
+#' @param plot logical; if \code{TRUE}, the sorting algorithm will be shown
+#' in real-time with a fascinating plot
+#' 
+#' @seealso
+#' \code{\link{sort}}
 #' 
 #' @references
 #' Modified from 
 #' \url{http://www.numbertheory.nl/2013/05/10/bubble-sort-implemented-in-pure-r/}
 #' 
 #' @examples
+#' bubble_sort(rnorm(10))
+#' 
+#' set.seed(1)
+#' x <- round(runif(100, 0, 100))
+#' (sorted <- bubble_sort(x))
+#' stopifnot(sorted == sort(x))
+#' 
 #' \dontrun{
-#' bubble_sort(round(runif(100, 0, 100)))
+#' library('microbenchmark')
+#' microbenchmark(bubble_sort(x), sort(x), unit = 'relative')
+#' 
+#' # Unit: relative
+#' #            expr      min       lq    mean   median       uq      max neval cld
+#' #  bubble_sort(x) 9686.046 7540.075 4453.95 3490.656 3510.477 3310.549   100   b
+#' #         sort(x)    1.000    1.000    1.00    1.000    1.000    1.000   100  a 
+#' 
+#' 
+#' ## an obnoxious visualization !
+#' bubble_sort(x, plot = TRUE)
 #' }
 #' @export
 
-bubble_sort <- function(vec) {
-  swap_pass <- function(vec) {
-    for (i in seq(1, length(vec) - 1)) {
-      vec[i:(i + 1)] <- swap_if_larger(vec[i:(i + 1)])
-    }
-    return(vec)
-  }
-  swap_if_larger <- function(pair) 
-    ifelse (c(larger(pair), larger(pair)), rev(pair), pair)
-  larger <- function(pair)
-    ifelse (pair[1] > pair[2], TRUE, FALSE)
-  f <- function(x) sample(1:length(x), 1)
+bubble_sort <- function(x, plot = FALSE) {
+  op <- par(no.readonly = TRUE)
+  on.exit(par(op))
   
-  new_vec <- swap_pass(vec)
-  plot.new()
-  par(xpd = NA, mar = c(0,0,0,0))
-  plot.window(xlim = range(new_vec), ylim = range(new_vec))
-  points(1:length(new_vec), new_vec, pch = 19, cex = .5, col = f(colors()))
-  text(x = f(new_vec), y = f(new_vec), labels = '!! bubble sort !!', 
-       srt = f(1:360), col = f(colors()), font = 2)
-  Sys.sleep(.1)
-  if (isTRUE(all.equal(vec, new_vec))) { 
-    return(new_vec) 
-  } else {
-    return(bubble_sort(new_vec))
+  ## helper fns
+  sample1 <- function(x) sample(x, 1L, TRUE)
+  swap_pass <- function(x) {
+    for (ii in seq(1L, length(x) - 1L))
+      x[ii:(ii + 1)] <- swap_if_gt(x[ii:(ii + 1L)])
+    x
   }
+  swap_if_gt <- function(pair)
+    ifelse(c(gt(pair), gt(pair)), rev(pair), pair)
+  gt <- function(pair) pair[1L] > pair[2L]
+  
+  sort_vec <- swap_pass(x)
+  
+  if (plot) {
+    xx <- seq_along(sort_vec)
+    
+    plot.new()
+    par(mar = c(0,0,0,0))
+    plot.window(range(xx), range(sort_vec))
+    
+    points(xx, sort_vec, pch = 19, col = sample1(colors()), xpd = NA)
+    text(sample1(xx), sample1(sort_vec), labels = '¡¡ bubble sort !!',
+         srt = sample1(1:360), col = sample1(colors()), font = 2, xpd = NA)
+    
+    Sys.sleep(0.1) 
+  }
+  
+  if (isTRUE(all.equal(x, sort_vec)))
+    sort_vec else Recall(sort_vec, plot)
 }
 
 #' Fibonacci's sequence

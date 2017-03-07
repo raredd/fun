@@ -4,22 +4,45 @@
 \alias{bubble_sort}
 \title{Bubble sort}
 \usage{
-bubble_sort(vec)
+bubble_sort(x, plot = FALSE)
 }
 \arguments{
-\item{vec}{a vector of unsorted integers}
+\item{x}{a vector}
+
+\item{plot}{logical; if \code{TRUE}, the sorting algorithm will be shown
+in real-time with a fascinating plot}
 }
 \description{
-The bubble sort algorithm iteratively sorts pairs of numbers by swapping 
-each pair if unsorted and repeating until all numbers are properly sorted.
+The bubble sort swaps neighboring pairs of numbers if not in proper order.
+The algorithm is called recursively until all pairs are in order.
 }
 \examples{
+bubble_sort(rnorm(10))
+
+set.seed(1)
+x <- round(runif(100, 0, 100))
+(sorted <- bubble_sort(x))
+stopifnot(sorted == sort(x))
+
 \dontrun{
-bubble_sort(round(runif(100, 0, 100)))
+library('microbenchmark')
+microbenchmark(bubble_sort(x), sort(x), unit = 'relative')
+
+# Unit: relative
+#            expr      min       lq    mean   median       uq      max neval cld
+#  bubble_sort(x) 9686.046 7540.075 4453.95 3490.656 3510.477 3310.549   100   b
+#         sort(x)    1.000    1.000    1.00    1.000    1.000    1.000   100  a 
+
+
+## an obnoxious visualization !
+bubble_sort(x, plot = TRUE)
 }
 }
 \references{
 Modified from 
 \url{http://www.numbertheory.nl/2013/05/10/bubble-sort-implemented-in-pure-r/}
+}
+\seealso{
+\code{\link{sort}}
 }
 
