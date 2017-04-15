@@ -16,4 +16,3 @@ Plots the golden ratio.
 golden()
 
 }
-

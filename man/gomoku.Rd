@@ -25,11 +25,10 @@ not do this job (patches are welcome, of course).
 gomoku()
 
 }
-\author{
-Yihui Xie <\url{http://yihui.name}>; modified from the code by pklin
-}
 \references{
 \url{http://cos.name/cn/topic/104750},
 \url{http://en.wikipedia.org/wiki/Gomoku}
 }
-
+\author{
+Yihui Xie <\url{http://yihui.name}>; modified from the code by pklin
+}

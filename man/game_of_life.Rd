@@ -149,4 +149,3 @@ plot(play_gol(matrix(1, 10, 10), 20, rules = my_rule))
 \references{
 \url{https://en.wikipedia.org/wiki/Conway\%27s_Game_of_Life}
 }
-

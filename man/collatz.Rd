@@ -30,4 +30,3 @@ collatz(5005, stoptime = TRUE)
 \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
 \url{https://oeis.org/A006877}
 }
-

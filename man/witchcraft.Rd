@@ -31,4 +31,3 @@ witchcraft(level = 3)
 \author{
 Robert Redd
 }
-

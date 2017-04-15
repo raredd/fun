@@ -42,10 +42,9 @@ mine_sweeper('insane')
 mine_sweeper()
 
 }
-\author{
-Yixuan Qiu \email{yixuan.qiu@cos.name}, Robert Redd (modifications)
-}
 \references{
 \url{http://en.wikipedia.org/wiki/Minesweeper_(computer_game)}
 }
-
+\author{
+Yixuan Qiu \email{yixuan.qiu@cos.name}, Robert Redd (modifications)
+}

@@ -45,4 +45,3 @@ Modified from
 \seealso{
 \code{\link{sort}}
 }
-

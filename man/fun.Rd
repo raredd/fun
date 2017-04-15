@@ -8,4 +8,3 @@
 \description{
 This is a collection of games and other stuff written in R.
 }
-

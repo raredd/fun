@@ -19,4 +19,3 @@ ch()
 \seealso{
 \url{http://www.stolaf.edu/people/olaf/cs125/}
 }
-

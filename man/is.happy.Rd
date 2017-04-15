@@ -19,4 +19,3 @@ is.happy(20)
 is.happy(19)
 
 }
-

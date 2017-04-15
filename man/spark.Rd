@@ -21,4 +21,3 @@ spark(runif(20))
 \seealso{
 \url{https://gist.github.com/ramnathv/7793167}
 }
-

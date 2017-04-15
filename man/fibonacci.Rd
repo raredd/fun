@@ -22,4 +22,3 @@ sapply(1:20, fibonacci)
 fibonacci2(1:20)
 
 }
-

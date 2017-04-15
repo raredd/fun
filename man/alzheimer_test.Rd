@@ -40,4 +40,3 @@ alzheimer_test()
 \author{
 Yihui Xie <\url{http://yihui.name}>
 }
-

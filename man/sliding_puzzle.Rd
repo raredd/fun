@@ -32,11 +32,10 @@ sliding_puzzle()
 sliding_puzzle(z=matrix(0:11, 3, 4))
 
 }
-\author{
-Taiyun Wei
-}
 \references{
 About the sliding puzzle:
 \url{http://en.wikipedia.org/wiki/Sliding_puzzle}
 }
-
+\author{
+Taiyun Wei
+}

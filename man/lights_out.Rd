@@ -42,10 +42,9 @@ Cairo graphics device \code{Cairo()} in the package
 lights_out()
 
 }
-\author{
-Yixuan Qiu \email{yixuan.qiu@cos.name}
-}
 \references{
 \url{http://en.wikipedia.org/wiki/Lights_Out_(game)}
 }
-
+\author{
+Yixuan Qiu \email{yixuan.qiu@cos.name}
+}

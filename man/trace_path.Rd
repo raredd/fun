@@ -31,4 +31,3 @@ trace_path(lens = seq(-1, 1,  length.out = 1000),
            turn = rep(pi / 1 * (-1 + 1/500), 1000))
 
 }
-
