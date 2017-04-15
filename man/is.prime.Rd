@@ -2,19 +2,25 @@
 % Please edit documentation in R/misc.R
 \name{is.prime}
 \alias{is.prime}
+\alias{is.prime2}
 \title{Prime numbers}
 \usage{
 is.prime(x)
+
+is.prime2(x)
 }
 \arguments{
 \item{x}{an integer}
 }
 \description{
-Check if a number is prime using a regular expression.
+Check if a number is prime using a regular expression (\code{is.prime}) or
+by checking that only two integers from \code{1:x} divide \code{x} evenly
+(\code{is.prime2}).
 }
 \examples{
 x <- 1:100
 x[is.prime(x)]
+x[is.prime2(x)]
 
 }
 \references{
@@ -23,4 +29,3 @@ x[is.prime(x)]
 \seealso{
 \code{\link{decToUna}}
 }
-

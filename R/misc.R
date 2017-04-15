@@ -377,7 +377,9 @@ is.happy <- function(x) {
 
 #' Prime numbers
 #' 
-#' Check if a number is prime using a regular expression.
+#' Check if a number is prime using a regular expression (\code{is.prime}) or
+#' by checking that only two integers from \code{1:x} divide \code{x} evenly
+#' (\code{is.prime2}).
 #' 
 #' @param x an integer
 #' 
@@ -390,6 +392,7 @@ is.happy <- function(x) {
 #' @examples
 #' x <- 1:100
 #' x[is.prime(x)]
+#' x[is.prime2(x)]
 #' 
 #' @export
 
@@ -397,6 +400,11 @@ is.prime <- function(x) {
   x <- abs(as.integer(x))
   !grepl('^1?$|^(11+?)\\1+$', decToUna(x))
 }
+
+#' @rdname is.prime
+#' @export
+is.prime2 <- function(x)
+  vapply(x, function(y) sum(y / 1:y == y %/% 1:y), integer(1L)) == 2L
 
 #' Nary numbers
 #' 
