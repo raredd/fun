@@ -22,31 +22,25 @@
 #' @export
 
 spark <- function(...) {
-  
   nums <- c(...)
   min_value <- min(nums)
   max_value <- max(nums)
-  value_scale <- max_value - min_value
-  zzz <- NULL
+  scale_value <- max_value - min_value
+  res <- NULL
   
   for (number in nums) {
-    if ((number - min_value) != 0 && (value_scale != 0)) {
-      scaled_value <- (number - min_value) / value_scale
-    } else {
-      scaled_value <- 0
-    }
-    ## hack:
-    ## 9604 and 9608 aren't vertically aligned 
-    ## the same as other block elements
+    scaled_value <- if ((number - min_value) != 0 && (scale_value != 0))
+      (number - min_value) / scale_value else 0
+    
+    ## hack: 9604 and 9608 aren't vertically aligned as other block elements
     num <- floor(min(6, scaled_value * 7))
-    if (num == 3) {
-      num <- ifelse ((scaled_value * 7) < 3.5, 2, 4)
-    } else if (num == 7) {
-      num <- 6
-    }
-    zzz <- c(zzz, num)
+    num[num == 3] <- ifelse((scaled_value * 7) < 3.5, 2, 4)
+    num[num == 7] <- 6
+    
+    res <- c(res, num)
   }
-  noquote(intToUtf8(9601 + zzz))
+  
+  noquote(intToUtf8(9601L + res))
 }
 
 #' r
@@ -77,7 +71,9 @@ R <- function() {
 #' 
 #' @references 
 #' \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
+#' 
 #' \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
+#' 
 #' \url{https://oeis.org/A006877}
 #' 
 #' @examples
@@ -85,86 +81,120 @@ R <- function() {
 #' collatz(1161)
 #' collatz(1618, stoptime = TRUE)
 #' collatz(5005, stoptime = TRUE)
+#' collatz(63728127)
 #' 
 #' @export
 
 collatz <- function(n, stoptime = FALSE) {
+  ## TODO:
+  ##   - add A060412
   
-  f <- function(n) {
-    iter <- 1
-    zzz <- n
-    while (n > 1) {
-      n <- (n / 2) * (n %% 2 == 0) + (3 * n + 1) * (n %% 2 == 1)
-      iter <- iter + 1
-      zzz <- c(zzz, n)
-    }
-    list(zzz = zzz,
-         iter = iter,
-         max = max(zzz),
-         nth = which.max(zzz))
-  }
+  stopifnot(
+    round(n) == n,
+    n > 0
+  )
   
   if (stoptime) {
-    res <- sapply(1:n, function(x) f(x)$iter)
+    res <- vapply(seq.int(n), function(x)
+      collatz1(x)$iterations, integer(1L))
     cat('\n Max time:', max(res),
         '\n  Element:', which.max(res))
     
-    maxv <- c(1, sapply(1:n, function(x) if (res[x] > max(res[1:(x - 1)])) x))
+    maxv <- c(1, sapply(seq.int(n), function(x)
+      if (res[x] > max(res[1:(x - 1L)])) x))
     message('\n\nOEIS sequence A006877: \nNumbers with a total stopping time',
             ' longer than any smaller starting value\n', 
             paste(unlist(maxv), collapse = ', '))
     
-    logn <- ifelse(n > 5000, 'x', '')
-    plot(1:n, res, las = 1, type = 'p', bty = 'l', log = logn,
-         xlab = 'starting value', ylab = 'time', 
-         main = paste0('first ', n, ' stopping times'), 
+    logn <- ifelse(n > 5000L, 'x', '')
+    plot(seq.int(n), res, las = 1, type = 'p', bty = 'l', log = logn,
+         xlab = 'Starting value', ylab = 'Stopping time',
+         main = sprintf('First %s stopping times', n), 
          cex.main = .8, cex.lab = .8)
   } else {
-    res <- f(n)
-    cat('\n   Iterations:', res$iter, 
-        '\nMaximum value:', res$max,
-        '\nNth iteration:', res$nth)
-    plot(res$zzz, type = 'l', las = 1, bty = 'l',
-         xlab = 'iterations', ylab = '',
-         main = 'value per iteration', cex.main = .8, cex.lab = .8)
+    res <- collatz1(n)
+    cat('\n   Iterations:', res$iterations, 
+        '\nMaximum value:', format(res$max_value, scientific = FALSE),
+        '\n Max position:', res$max_position)
+    plot(res$sequence, type = 'l', las = 1, bty = 'l',
+         xlab = 'Iterations', ylab = '',
+         main = 'Value per iteration',
+         cex.main = .8, cex.lab = .8)
   }
+  
+  invisible(collatz1(n))
+}
+
+collatz1 <- function(n) {
+  n  <- as.integer(n)
+  ii <- 1L
+  nn <- n
+  
+  while (n > 1L) {
+    n  <- (n / 2L) * (n %% 2L == 0L) + (3L * n + 1L) * (n %% 2L == 1L)
+    ii <- ii + 1L
+    nn <- c(nn, n)
+  }
+  
+  list(sequence = nn, iterations = ii - 1L,
+       max_value = max(nn), max_position = which.max(nn))
 }
 
 #' Trace path
 #' 
-#' @param lens length, number of points
-#' @param turn turns at each value along \code{lens}
+#' @param x a sequence of points
+#' @param theta rotation at each value of \code{x}
+#' @param ... additional arguments passed to \code{\link{lines}} or graphical
+#' parameters passed to \code{\link{par}}
+#' @param add logical; if \code{TRUE}, the figure is added to the current
+#' plotting window
 #' 
 #' @examples
-#' trace_path(lens = seq(0, 1,  length.out = 200),
-#'            turn = rep(pi/2 * (-1 + 1/200), 200))
-#' trace_path(lens = seq(1, 10, length.out = 1000),
-#'            turn = rep(2 * pi / 10, 1000))
-#' trace_path(lens = seq(0, 1,  length.out = 500),
-#'            turn = seq(0, pi, length.out = 500))
-#' trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
-#'            turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
-#' trace_path(lens = seq(-1, 1,  length.out = 200),
-#'            turn = rep(pi / 1 * (-1 + 1/200), 200))
-#' trace_path(lens = seq(-1, 1,  length.out = 500),
-#'            turn = rep(pi / 1 * (-1 + 1/200), 500))
-#' trace_path(lens = seq(-1, 1,  length.out = 1000),
-#'            turn = rep(pi / 1 * (-1 + 1/500), 1000))
+#' x <- seq(0, 1, length.out = 7L)
+#' trace_path(1:100, rep(pi / 2, 100) * c(-1, 1), type = 'p')
+#' sapply(seq_along(x), function(ii)
+#'   trace_path(1:100, rep(pi * x[ii], 100) * c(-1, 1), col = ii, add = TRUE))
+#' 
+#' 
+#' trace_path(seq(0, 1,  length.out = 200),
+#'            rep(pi / 2 * (-1 + 1 / 200), 200))
+#' 
+#' trace_path(seq(1, 10, length.out = 1000),
+#'            rep(2 * pi / 10, 1000))
+#' 
+#' trace_path(seq(0, 1,  length.out = 500),
+#'            seq(0, pi, length.out = 500))
+#' 
+#' trace_path(seq(0, 1,  length.out = 600) * c(1, -1),
+#'            seq(0, 8 * pi, length.out = 600) * seq(-1, 1, length.out = 200))
+#' 
+#' trace_path(seq(-1, 1,  length.out = 200),
+#'            rep(pi / 1 * (-1 + 1 / 200), 200))
+#' 
+#' trace_path(seq(-1, 1,  length.out = 500),
+#'            rep(pi / 1 * (-1 + 1 / 200), 500))
+#' 
+#' trace_path(seq(-1, 1,  length.out = 1000),
+#'            rep(pi / 1 * (-1 + 1 / 500), 1000))
 #' 
 #' @export
 
-trace_path <- function(lens, turn) {
-  op <- par(no.readonly = TRUE)
+trace_path <- function(x, theta, ..., add = FALSE) {
+  op <- par(mar = c(0, 0, 0, 0))
   on.exit(par(op))
-  facing <- pi / 2 + cumsum(turn)
-  move <- lens * exp(1i * facing)
-  position <- cumsum(move)
-  x <- c(0, Re(position))
-  y <- c(0, Im(position))
-  plot.new()
-  par(mar = c(0, 0, 0, 0))
-  plot.window(range(x), range(y))
-  lines(x, y)
+  
+  face <- pi / 2 + cumsum(theta)
+  move <- x * exp(1i * face)
+  pos  <- cumsum(move)
+  x <- c(0, Re(pos))
+  y <- c(0, Im(pos))
+  
+  if (!add) {
+    plot.new()
+    plot.window(range(x), range(y))
+  }
+  
+  lines(x, y, ...)
 }
 
 #' Bubble sort
@@ -189,7 +219,8 @@ trace_path <- function(lens, turn) {
 #' set.seed(1)
 #' x <- round(runif(100, 0, 100))
 #' (sorted <- bubble_sort(x))
-#' stopifnot(sorted == sort(x))
+#' identical(sorted, sort(x))
+#' # [1] TRUE
 #' 
 #' \dontrun{
 #' library('microbenchmark')
@@ -207,14 +238,11 @@ trace_path <- function(lens, turn) {
 #' @export
 
 bubble_sort <- function(x, plot = FALSE) {
-  op <- par(no.readonly = TRUE)
-  on.exit(par(op))
-  
   ## helper fns
   sample1 <- function(x) sample(x, 1L, TRUE)
   swap_pass <- function(x) {
     for (ii in seq(1L, length(x) - 1L))
-      x[ii:(ii + 1)] <- swap_if_gt(x[ii:(ii + 1L)])
+      x[ii:(ii + 1L)] <- swap_if_gt(x[ii:(ii + 1L)])
     x
   }
   swap_if_gt <- function(pair)
@@ -224,10 +252,11 @@ bubble_sort <- function(x, plot = FALSE) {
   sort_vec <- swap_pass(x)
   
   if (plot) {
+    op <- par(mar = c(0,0,0,0))
+    on.exit(par(op))
     xx <- seq_along(sort_vec)
     
     plot.new()
-    par(mar = c(0,0,0,0))
     plot.window(range(xx), range(sort_vec))
     
     points(xx, sort_vec, pch = 19, col = sample1(colors()), xpd = NA)
@@ -291,7 +320,7 @@ fibonacci2 <- function(n) {
 #' @export
 
 golden <- function(theta) {
-  op <- par(no.readonly = TRUE)
+  op <- par(ann = FALSE, mar = c(0,0,0,0), bg = 'lightgoldenrod')
   on.exit(par(op))
   
   f <- function(x) 
@@ -300,13 +329,14 @@ golden <- function(theta) {
     ifelse(x == 1, 90, 360 * atan(2 * pi / log(x)) / 2 / pi)
   
   if (missing(theta))
-    theta <- seq(-100, -9.25, by = .01)
-  r <- f(60) ** (theta / 2 / pi)
+    theta <- seq(-100, -9.25, length.out = 1e4)
+  r <- f(60) ^ (theta / 2 / pi)
   x <- r * cos(theta)
   y <- r * sin(theta)
   
-  par(ann = FALSE, mar = c(0,0,0,0), bg = 'lightgoldenrod')
   plot(x, y, type = 'l', axes = FALSE)
+  
+  invisible(list(x = x, y = y, r = r))
 }
 
 #' Calvin and Hobbes
@@ -364,14 +394,16 @@ ch <- function(who) {
 #' @export
 
 is.happy <- function(x) {
-  sad <- sample(c('>:[',':-(',':(',':-c',':c',':-<',':C',':{',':-[',':[',':{'), 1)
-  hap <- sample(c(':-)',':)',':o)',':]',':3',':)',':}','=]','8)','=)',':}',':^)',':)'), 1)
+  sad <- sample(c('>:[',':-(',':(',':-c',':c',':-<',':C',':{',':-[',':[',':{'), 1L)
+  hap <- sample(c(':-)',':)',':o)',':]',':3',':)',':}','=]','8)','=)',':}',':^)',':)'), 1L)
+  
   x <- gsub('\\D', '', x)
   ok <- (function(x) {
     xx <- as.numeric(strsplit(as.character(x), '')[[1]]) ** 2
     tryCatch(if ((xx <- sum(xx)) == 1) sprintf('happy! %s', hap) else Recall(xx), 
              error = function(e) sprintf('sad %s', sad))
   })(x)
+  
   sprintf('%s is %s', x, ok)
 }
 

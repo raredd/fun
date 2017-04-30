@@ -22,7 +22,8 @@ bubble_sort(rnorm(10))
 set.seed(1)
 x <- round(runif(100, 0, 100))
 (sorted <- bubble_sort(x))
-stopifnot(sorted == sort(x))
+identical(sorted, sort(x))
+# [1] TRUE
 
 \dontrun{
 library('microbenchmark')

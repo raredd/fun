@@ -23,10 +23,13 @@ collatz(19)
 collatz(1161)
 collatz(1618, stoptime = TRUE)
 collatz(5005, stoptime = TRUE)
+collatz(63728127)
 
 }
 \references{
 \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
+
 \url{http://en.wikipedia.org/wiki/Collatz_conjecture}
+
 \url{https://oeis.org/A006877}
 }

@@ -4,30 +4,48 @@
 \alias{trace_path}
 \title{Trace path}
 \usage{
-trace_path(lens, turn)
+trace_path(x, theta, ..., add = FALSE)
 }
 \arguments{
-\item{lens}{length, number of points}
+\item{x}{a sequence of points}
 
-\item{turn}{turns at each value along \code{lens}}
+\item{theta}{rotation at each value of \code{x}}
+
+\item{...}{additional arguments passed to \code{\link{lines}} or graphical
+parameters passed to \code{\link{par}}}
+
+\item{add}{logical; if \code{TRUE}, the figure is added to the current
+plotting window}
 }
 \description{
 Trace path
 }
 \examples{
-trace_path(lens = seq(0, 1,  length.out = 200),
-           turn = rep(pi/2 * (-1 + 1/200), 200))
-trace_path(lens = seq(1, 10, length.out = 1000),
-           turn = rep(2 * pi / 10, 1000))
-trace_path(lens = seq(0, 1,  length.out = 500),
-           turn = seq(0, pi, length.out = 500))
-trace_path(lens = seq(0, 1,  length.out = 600) * c(1, -1),
-           turn = seq(0, 8*pi, length.out = 600) * seq(-1, 1, length.out = 200))
-trace_path(lens = seq(-1, 1,  length.out = 200),
-           turn = rep(pi / 1 * (-1 + 1/200), 200))
-trace_path(lens = seq(-1, 1,  length.out = 500),
-           turn = rep(pi / 1 * (-1 + 1/200), 500))
-trace_path(lens = seq(-1, 1,  length.out = 1000),
-           turn = rep(pi / 1 * (-1 + 1/500), 1000))
+x <- seq(0, 1, length.out = 7L)
+trace_path(1:100, rep(pi / 2, 100) * c(-1, 1), type = 'p')
+sapply(seq_along(x), function(ii)
+  trace_path(1:100, rep(pi * x[ii], 100) * c(-1, 1), col = ii, add = TRUE))
+
+
+trace_path(seq(0, 1,  length.out = 200),
+           rep(pi / 2 * (-1 + 1 / 200), 200))
+
+trace_path(seq(1, 10, length.out = 1000),
+           rep(2 * pi / 10, 1000))
+
+trace_path(seq(0, 1,  length.out = 500),
+           seq(0, pi, length.out = 500))
+
+trace_path(seq(0, 1,  length.out = 600) * c(1, -1),
+           seq(0, 8 * pi, length.out = 600) * seq(-1, 1, length.out = 200))
+
+trace_path(seq(-1, 1,  length.out = 200),
+           rep(pi / 1 * (-1 + 1 / 200), 200))
+
+trace_path(seq(-1, 1,  length.out = 500),
+           rep(pi / 1 * (-1 + 1 / 200), 500))
+
+trace_path(seq(-1, 1,  length.out = 1000),
+           rep(pi / 1 * (-1 + 1 / 500), 1000))
 
 }
