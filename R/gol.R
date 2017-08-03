@@ -137,47 +137,55 @@ NULL
 
 #' @rdname game_of_life
 #' @export
-play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale  = FALSE,
+play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
                      rules = 'conway') {
-  stopifnot(is.matrix(mat))
-  stopifnot(all(mat %in% 0:1))
+  stopifnot(
+    is.matrix(mat),
+    all(mat %in% 0:1)
+  )
   
   RULES <- if (is.function(rules)) {
-    if (any(dim(mat) != dim(rules(mat, rep(0, length(mat)), NULL))))
+    if (any(dim(mat) != dim(rules(mat, rep_len(0L, length(mat)), NULL))))
       stop('Improper rule function')
     rules
   } else {
-    match.arg(rules, c('conway','life_without_death','day_and_night',
-                       'high_life'),
+    match.arg(rules, c('conway', 'life_without_death',
+                       'day_and_night', 'high_life'),
               several.ok = FALSE)
   }
   
-  ii <- 1
-  life <- array(dim = c(dim(mat), gen + 1))
-  life[,, 1] <- mat
+  ii <- 1L
+  life <- array(dim = c(dim(mat), gen + 1L))
+  life[,, 1L] <- mat
   
   cat('\nEvolving\n')
   pb <- txtProgressBar(max = gen, style = 3, title = 'Evolving')
+  
   while (ii <= gen) {
     setTxtProgressBar(pb, ii, title = 'Evolving')
     life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, RULES, ii)
-    ii <- ii + 1
+    ii <- ii + 1L
   }
+  
   close(pb)
   
-  life <- structure(list(life = life, scaled = scale, rules = RULES),
-                    class = 'gol')
-  invisible(life)
+  invisible(
+    structure(
+      list(life = life, scaled = scale, rules = RULES), class = 'gol'
+    )
+  )
 }
 
 gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
   RULES <- if (is.function(rules))
-    rules else switch(rules,
-                      conway = rules_conway_,
-                      life_without_death = rules_lwod_,
-                      day_and_night = rules_dn_,
-                      high_life = rules_hl_,
-                      stop('Invalid rule function'))
+    rules else
+      switch(rules,
+             conway = rules_conway_,
+             life_without_death = rules_lwod_,
+             day_and_night = rules_dn_,
+             high_life = rules_hl_,
+             stop('Invalid rule function'))
+  
   if (rotate) {
     if (scale)
       return(rotate_(mat, TRUE))
@@ -191,17 +199,19 @@ gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
 
 waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
   op <- par(no.readonly = TRUE)
-  if (reset_par) on.exit(par(op))
+  if (reset_par)
+    on.exit(par(op))
+  
   plot.new()
-  par(list(...))
+  par(...)
   
   o <- cbind(c(row(mat)), c(col(mat))) - 1
   psum <- function(...) rowSums(do.call('cbind', list(...)))
   
-  plot.window(xlim = c(0, max(o[, 2]) + 1), ylim = c(0, max(o[, 1]) + 1),
+  plot.window(xlim = c(0, max(o[, 2L]) + 1), ylim = c(0, max(o[, 1L]) + 1),
               xaxs = 'i', yaxs = 'i', asp = asp)
-  rect(xl <- o[, 2], yb <- o[, 1], xr <- o[, 2] + (1 - xpad),
-       yt <- o[, 1] + (1 - ypad), col = c(mat), border = NA)
+  rect(xl <- o[, 2L], yb <- o[, 1L], xr <- o[, 2L] + (1 - xpad),
+       yt <- o[, 1L] + (1 - ypad), col = c(mat), border = NA)
   invisible(list(matrix = mat, origin = `colnames<-`(o[, 2:1], c('x','y')),
                  centers = cbind(x = psum(xl, xr) / 2, y = psum(yb, yt) / 2)))
 }
@@ -210,18 +220,21 @@ waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
 #' @export
 plot.gol <- function(x, col, time = 0.1, ...) {
   stopifnot(inherits(x, 'gol'))
+  
   op <- par(no.readonly = TRUE)
   on.exit(par(op))
   par(mar = c(1,1,1,1))
   
   col <- if (missing(col))
-    c('white','black') else
-      if (length(col) > 2L) colorRampPalette(col)(1000) else col
-  X <- x$life
-  lx <- dim(X)[3]
+    c('white', 'black') else
+      if (length(col) > 2L)
+        colorRampPalette(col)(1000L) else col
+  X  <- x$life
+  lx <- dim(X)[3L]
   
   cat('\nPlotting\n')
   pb <- txtProgressBar(max = lx, style = 3, title = 'Plotting')
+  
   for (ii in seq.int(lx)) {
     setTxtProgressBar(pb, ii, title = 'Plotting')
     Sys.sleep(time)
@@ -230,6 +243,7 @@ plot.gol <- function(x, col, time = 0.1, ...) {
         matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
     waffle(y, ...)
   }
+  
   close(pb)
   
   invisible(NULL)
@@ -238,7 +252,10 @@ plot.gol <- function(x, col, time = 0.1, ...) {
 ## rule sets
 rules_conway_ <- function(X, Y, Z) {
   ## x,y integer matrices of alive/dead (x) and neighbor count (y)
-  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  stopifnot(
+    length(x <- c(X)) == length(y <- c(Y))
+  )
+  
   xl <- as.logical(x)       ## poor, wretched souls
   
   x[xl  & y < 2]      <- 0  ## under-population
@@ -250,7 +267,10 @@ rules_conway_ <- function(X, Y, Z) {
 }
 
 rules_hl_ <- function(X, Y, Z) {
-  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  stopifnot(
+    length(x <- c(X)) == length(y <- c(Y))
+  )
+  
   xl <- as.logical(x)
   
   x[xl  & y < 2]      <- 0  ## under-population
@@ -263,39 +283,48 @@ rules_hl_ <- function(X, Y, Z) {
 }
 
 rules_lwod_ <- function(X, Y, Z) {
-  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  stopifnot(
+    length(x <- c(X)) == length(y <- c(Y))
+  )
+  
   xl <- as.logical(x)
   x[xl  & y %in% 2:3] <- 1
   x[!xl & y == 3]     <- 1
+  
   matrix(x, nrow(X))
 }
 
 rules_dn_ <- function(X, Y, Z) {
-  stopifnot(length(x <- c(X)) == length(y <- c(Y)))
+  stopifnot(
+    length(x <- c(X)) == length(y <- c(Y))
+  )
+  
   xl <- as.logical(x)
   x[!xl & y %in% c(3,6:8)]   <- 1
   x[xl  & y %in% c(3:4,6:8)] <- 1
+  
   matrix(x, nrow(X))
 }
 
 rotate_ <- function(mat, scale = scale) {
   nr <- nrow(mat)
   nc <- ncol(mat)
-  padr <- rep(0, nr)
-  padc <- rep(0, nc)
+  padr <- rep_len(0, nr)
+  padc <- rep_len(0, nc)
   
   l <- list(
     u = rbind(padc, mat[-nr, ]),
-    d = rbind(mat[-1, ], padc),
+    d = rbind(mat[-1L, ], padc),
     l = cbind(padr, mat[, -nc]),
-    r = cbind(mat[, -1], padr),
+    r = cbind(mat[, -1L], padr),
     
-    ul = rbind(padc, cbind(padr[-1], mat[-nr, -nc])),
-    ur = rbind(padc, cbind(mat[-nr, -1], padr[-1])),
-    dl = rbind(cbind(padr[-1], mat[-1, -nc]), padc),
-    dr = rbind(cbind(mat[-1, -1], padr[-1]), padc)
+    ul = rbind(padc, cbind(padr[-1L], mat[-nr, -nc])),
+    ur = rbind(padc, cbind(mat[-nr, -1L], padr[-1L])),
+    dl = rbind(cbind(padr[-1L], mat[-1L, -nc]), padc),
+    dr = rbind(cbind(mat[-1L, -1L], padr[-1L]), padc)
   )
   rot <- `dimnames<-`(Reduce('+', l), NULL)
+  
   if (scale)
     rot / max(rot) else rot
 }
@@ -311,15 +340,17 @@ one_neighbor <- function(mat, rc) {
   # one_neighbor(mat, c(2,4))
   nn <- vapply(seq_along(dir), function(x) {
     d <- dir[[x]]
-    try0(mat[rc[1] + d[1], rc[2] + d[2]])
-  }, integer(1))
+    try0(mat[rc[1L] + d[1L], rc[2L] + d[2L]])
+  }, integer(1L))
+  
   sum(nn)
 }
 
 all_neighbors <- function(mat) {
   ## get count of neighbors for all
   idx <- cbind(c(row(mat)), c(col(mat)))
-  m <- vapply(1:nrow(idx), function(x)
-    one_neighbor(mat, idx[x, ]), integer(1))
+  m   <- vapply(seq.int(nrow(idx)), function(x)
+    one_neighbor(mat, idx[x, ]), integer(1L))
+  
   matrix(m, nrow(mat))
 }
