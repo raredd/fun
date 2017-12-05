@@ -1,7 +1,8 @@
 ### game of life
 # play_gol, gol_step, waffle, plot.gol
-###
+# 
 # see ./inst/source/gol_special.R for data
+###
 
 
 #' Conway's Game of Life
@@ -18,13 +19,13 @@
 #' cell:
 #' 
 #' \enumerate{
-#' \item{Any live cell with fewer than two live neighbours dies, as if caused
+#' \item{Any live cell with fewer than two live neighbors dies, as if caused
 #' by under-population.}
-#' \item{Any live cell with two or three live neighbours lives on to the next
+#' \item{Any live cell with two or three live neighbors lives on to the next
 #' generation.}
-#' \item{Any live cell with more than three live neighbours dies, as if by
+#' \item{Any live cell with more than three live neighbors dies, as if by
 #' over-population.}
-#' \item{Any dead cell with exactly three live neighbours becomes a live cell,
+#' \item{Any dead cell with exactly three live neighbors becomes a live cell,
 #' as if by reproduction.}
 #' }
 #' 
@@ -35,11 +36,23 @@
 #' If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
 #' \code{[0,1]} giving a smoother distribution of the neighbor count. This is
 #' useful when \code{col} is given as a vector of three or more colors which
-#' is converted to a continuous scale via \code{\link{colorRampPalette}}.
+#' is interpolated via \code{\link{colorRampPalette}}.
 #' 
 #' The resulting plot is created with \code{\link[rawr]{waffle}}, a non
 #' exported function which can be accessed using \code{fun:::waffle}. Full
 #' documentation and usage can be found in the \pkg{rawr} package version.
+#' 
+#' Four rule sets are built-in:
+#' \enumerate{
+#' \item{Conway (\code{"conway"}) - described above}
+#' \item{Highlife (\code{"highlife"}) - similar to Conway with an additional
+#' rule that dead cells with six neighbors are born}
+#' \item{Life without death (\code{"life_without_death"}) - Conway's rules
+#' without death}
+#' \item{Day and night (\code{"day_and_night"}) - dead cells with 3, 6, 7,
+#' or 8 neighbors are born, and alive cells with 3, 4, 6, 7, or 8 neighbors
+#' survive}
+#' }
 #' 
 #' Additionally, a custom rule function can be passed using the \code{rules}
 #' argument. This function should have three arguments: an integer matrix
@@ -48,9 +61,9 @@
 #' The function should apply a set of rules and return an integer matrix
 #' having the same dimensions as the initial state.
 #' 
-#' Note that this function will be checked for input/output consistency only,
-#' so all some or all of these parameters may be ignored so long as the check
-#' passes; see examples.
+#' Note that this function will be checked for input/output consistency
+#' \emph{only}, so some or all of these parameters may be ignored as long as
+#' this check passes; see examples.
 #' 
 #' @param mat a \code{{0,1}} integer matrix
 #' @param gen number of generations to simulate
@@ -63,7 +76,7 @@
 #' @param col a vector of two or more colors if \code{scale} is \code{TRUE};
 #' otherwise, a vector of length two with the colors for live and dead cells,
 #' respectively
-#' @param time length of pause between generations
+#' @param sleep length of pause between generations
 #' @param ... additional parameters passed to \code{\link[rawr]{waffle}} or
 #' further to \code{\link{par}}; see details
 #' 
@@ -72,14 +85,13 @@
 #' 
 #' @examples
 #' \dontrun{
-#' 
 #' set.seed(1)
 #' n <- 150
 #' m <- matrix(rbinom(n * n, 1, 0.3), n)
 #' plot(play_gol(m))
 #' 
 #' plot(play_gol(m, rotate = TRUE, scale = TRUE),
-#'      col = c('white','red','yellow','blue','white'))
+#'      col = c('white', 'red', 'yellow', 'blue', 'white'))
 #' 
 #' ## this system file contains some special cases
 #' source(system.file('source', 'gol_special.R', package = 'fun'))
@@ -93,10 +105,11 @@
 #' plot(play_gol(tumbler))
 #' plot(play_gol(glider_gun, 200))
 #' 
+#' 
 #' ## alternative rules
+#' plot(play_gol(bowtie, 30, rules = 'highlife'))
 #' plot(play_gol(ladder, rules = 'life_without_death'))
 #' plot(play_gol(glider, 50, rules = 'day_and_night'))
-#' plot(play_gol(bowtie, 30, rules = 'high_life'))
 #' 
 #' 
 #' ## custom rules
@@ -138,7 +151,8 @@ NULL
 #' @rdname game_of_life
 #' @export
 play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
-                     rules = 'conway') {
+                     rules = c('conway', 'highlife', 'life_without_death',
+                               'day_and_night')) {
   stopifnot(
     is.matrix(mat),
     all(mat %in% 0:1)
@@ -148,22 +162,18 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
     if (any(dim(mat) != dim(rules(mat, rep_len(0L, length(mat)), NULL))))
       stop('Improper rule function')
     rules
-  } else {
-    match.arg(rules, c('conway', 'life_without_death',
-                       'day_and_night', 'high_life'),
-              several.ok = FALSE)
-  }
+  } else match.arg(rules)
   
-  ii <- 1L
   life <- array(dim = c(dim(mat), gen + 1L))
   life[,, 1L] <- mat
   
-  cat('\nEvolving\n')
-  pb <- txtProgressBar(max = gen, style = 3, title = 'Evolving')
+  cat('\nEvolving...\n')
+  pb <- txtProgressBar(max = gen, style = 3L, title = 'Evolving')
   
+  ii <- 1L
   while (ii <= gen) {
     setTxtProgressBar(pb, ii, title = 'Evolving')
-    life[,, ii + 1] <- mat <- gol_step(mat, rotate, scale, RULES, ii)
+    life[,, ii + 1L] <- mat <- gol_step(mat, rotate, scale, RULES, ii)
     ii <- ii + 1L
   }
   
@@ -178,13 +188,13 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
 
 gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
   RULES <- if (is.function(rules))
-    rules else
-      switch(rules,
-             conway = rules_conway_,
-             life_without_death = rules_lwod_,
-             day_and_night = rules_dn_,
-             high_life = rules_hl_,
-             stop('Invalid rule function'))
+    rules
+  else switch(rules,
+              conway             = rules_conway_,
+              life_without_death = rules_lwod_,
+              day_and_night      = rules_dn_,
+              highlife           = rules_hl_,
+              stop('Invalid rule function'))
   
   if (rotate) {
     if (scale)
@@ -198,6 +208,10 @@ gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
 }
 
 waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
+  psum <- function(...) {
+    rowSums(do.call('cbind', list(...)))
+  }
+  
   op <- par(no.readonly = TRUE)
   if (reset_par)
     on.exit(par(op))
@@ -206,24 +220,29 @@ waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
   par(...)
   
   o <- cbind(c(row(mat)), c(col(mat))) - 1
-  psum <- function(...) rowSums(do.call('cbind', list(...)))
   
-  plot.window(xlim = c(0, max(o[, 2L]) + 1), ylim = c(0, max(o[, 1L]) + 1),
-              xaxs = 'i', yaxs = 'i', asp = asp)
+  plot.window(
+    xlim = c(0, max(o[, 2L]) + 1), ylim = c(0, max(o[, 1L]) + 1),
+    xaxs = 'i', yaxs = 'i', asp = asp
+  )
   rect(xl <- o[, 2L], yb <- o[, 1L], xr <- o[, 2L] + (1 - xpad),
        yt <- o[, 1L] + (1 - ypad), col = c(mat), border = NA)
-  invisible(list(matrix = mat, origin = `colnames<-`(o[, 2:1], c('x','y')),
-                 centers = cbind(x = psum(xl, xr) / 2, y = psum(yb, yt) / 2)))
+  
+  invisible(
+    list(matrix = mat, origin = `colnames<-`(o[, 2:1], c('x', 'y')),
+         centers = cbind(x = psum(xl, xr) / 2, y = psum(yb, yt) / 2))
+  )
 }
 
 #' @rdname game_of_life
 #' @export
-plot.gol <- function(x, col, time = 0.1, ...) {
-  stopifnot(inherits(x, 'gol'))
+plot.gol <- function(x, col, sleep = 0.1, ...) {
+  stopifnot(
+    inherits(x, 'gol')
+  )
   
-  op <- par(no.readonly = TRUE)
+  op <- par(mar = c(1,1,1,1))
   on.exit(par(op))
-  par(mar = c(1,1,1,1))
   
   col <- if (missing(col))
     c('white', 'black') else
@@ -232,15 +251,17 @@ plot.gol <- function(x, col, time = 0.1, ...) {
   X  <- x$life
   lx <- dim(X)[3L]
   
-  cat('\nPlotting\n')
-  pb <- txtProgressBar(max = lx, style = 3, title = 'Plotting')
+  cat('\nPlotting...\n')
+  pb <- txtProgressBar(max = lx, style = 3L, title = 'Plotting')
   
   for (ii in seq.int(lx)) {
     setTxtProgressBar(pb, ii, title = 'Plotting')
-    Sys.sleep(time)
+    Sys.sleep(sleep)
+    
     y <- if (x$scaled)
-      matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii])) else
-        matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
+      matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii]))
+    else matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
+    
     waffle(y, ...)
   }
   
@@ -277,7 +298,8 @@ rules_hl_ <- function(X, Y, Z) {
   x[xl  & y %in% 2:3] <- 1  ## x lives
   x[!xl & y == 3]     <- 1  ## reproduction
   x[xl  & y >= 4]     <- 0  ## over-population
-  x[!xl & y == 6]     <- 1  ## additional rule to conway for hl
+  ## additional rule to conway rules for highlife
+  x[!xl & y == 6]     <- 1  ## reproduction
   
   matrix(x, nrow(X))
 }
@@ -288,8 +310,8 @@ rules_lwod_ <- function(X, Y, Z) {
   )
   
   xl <- as.logical(x)
-  x[xl  & y %in% 2:3] <- 1
-  x[!xl & y == 3]     <- 1
+  x[xl  & y %in% 2:3] <- 1  ## reproduction
+  x[!xl & y == 3]     <- 1  ## reproduction
   
   matrix(x, nrow(X))
 }
@@ -300,8 +322,8 @@ rules_dn_ <- function(X, Y, Z) {
   )
   
   xl <- as.logical(x)
-  x[!xl & y %in% c(3,6:8)]   <- 1
-  x[xl  & y %in% c(3:4,6:8)] <- 1
+  x[!xl & y %in% c(3, 6, 7, 8)]    <- 1  ## reproduction
+  x[xl  & y %in% c(3, 4, 6, 7, 8)] <- 1  ## x lives
   
   matrix(x, nrow(X))
 }
@@ -309,14 +331,14 @@ rules_dn_ <- function(X, Y, Z) {
 rotate_ <- function(mat, scale = scale) {
   nr <- nrow(mat)
   nc <- ncol(mat)
-  padr <- rep_len(0, nr)
-  padc <- rep_len(0, nc)
+  padr <- rep_len(0L, nr)
+  padc <- rep_len(0L, nc)
   
   l <- list(
-    u = rbind(padc, mat[-nr, ]),
-    d = rbind(mat[-1L, ], padc),
-    l = cbind(padr, mat[, -nc]),
-    r = cbind(mat[, -1L], padr),
+    u  = rbind(padc, mat[-nr, ]),
+    d  = rbind(mat[-1L, ], padc),
+    l  = cbind(padr, mat[, -nc]),
+    r  = cbind(mat[, -1L], padr),
     
     ul = rbind(padc, cbind(padr[-1L], mat[-nr, -nc])),
     ur = rbind(padc, cbind(mat[-nr, -1L], padr[-1L])),
@@ -329,15 +351,22 @@ rotate_ <- function(mat, scale = scale) {
     rot / max(rot) else rot
 }
 
-## rotate_ does the job of these three fns which are slow af
-dir <- list(u = c(-1, 0), d = c(1, 0), l = c(0, -1), r = c(0, 1))
-dir <- c(dir, list(ul = c(-1,-1), ur = c(-1,1), dl = c(1,-1), dr = c(1,1)))
-try0 <- function(x)
-  tryCatch(if (length(x)) as.integer(x) else 0L, error = function(e) 0L)
-
+## rotate_ does the job of these two fns which are slow af
 one_neighbor <- function(mat, rc) {
   ## get count of neighbors for one (rc = c(row_index, column_index))
   # one_neighbor(mat, c(2,4))
+  dir <- list(
+    u  = c(-1, 0),   d = c(1, 0),   l = c(0, -1),  r = c(0, 1),
+    ul = c(-1, -1), ur = c(-1, 1), dl = c(1, -1), dr = c(1, 1)
+  )
+  try0 <- function(x) {
+    tryCatch(
+      if (length(x))
+        as.integer(x) else 0L,
+      error = function(e) 0L
+    )
+  }
+  
   nn <- vapply(seq_along(dir), function(x) {
     d <- dir[[x]]
     try0(mat[rc[1L] + d[1L], rc[2L] + d[2L]])

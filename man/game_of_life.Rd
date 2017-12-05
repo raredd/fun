@@ -8,9 +8,9 @@
 \title{Conway's Game of Life}
 \usage{
 play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
-  rules = "conway")
+  rules = c("conway", "highlife", "life_without_death", "day_and_night"))
 
-\method{plot}{gol}(x, col, time = 0.1, ...)
+\method{plot}{gol}(x, col, sleep = 0.1, ...)
 }
 \arguments{
 \item{mat}{a \code{{0,1}} integer matrix}
@@ -31,7 +31,7 @@ alternatively, a rule function can be given, see details}
 otherwise, a vector of length two with the colors for live and dead cells,
 respectively}
 
-\item{time}{length of pause between generations}
+\item{sleep}{length of pause between generations}
 
 \item{...}{additional parameters passed to \code{\link[rawr]{waffle}} or
 further to \code{\link{par}}; see details}
@@ -50,13 +50,13 @@ according to the following rules which are applied simultaneously to each
 cell:
 
 \enumerate{
-\item{Any live cell with fewer than two live neighbours dies, as if caused
+\item{Any live cell with fewer than two live neighbors dies, as if caused
 by under-population.}
-\item{Any live cell with two or three live neighbours lives on to the next
+\item{Any live cell with two or three live neighbors lives on to the next
 generation.}
-\item{Any live cell with more than three live neighbours dies, as if by
+\item{Any live cell with more than three live neighbors dies, as if by
 over-population.}
-\item{Any dead cell with exactly three live neighbours becomes a live cell,
+\item{Any dead cell with exactly three live neighbors becomes a live cell,
 as if by reproduction.}
 }
 
@@ -67,11 +67,23 @@ is much faster than the looping method (\code{rotate = FALSE}).
 If \code{scale} is \code{TRUE}, the neighbor count matrix is scaled to
 \code{[0,1]} giving a smoother distribution of the neighbor count. This is
 useful when \code{col} is given as a vector of three or more colors which
-is converted to a continuous scale via \code{\link{colorRampPalette}}.
+is interpolated via \code{\link{colorRampPalette}}.
 
 The resulting plot is created with \code{\link[rawr]{waffle}}, a non
 exported function which can be accessed using \code{fun:::waffle}. Full
 documentation and usage can be found in the \pkg{rawr} package version.
+
+Four rule sets are built-in:
+\enumerate{
+\item{Conway (\code{"conway"}) - described above}
+\item{Highlife (\code{"highlife"}) - similar to Conway with an additional
+rule that dead cells with six neighbors are born}
+\item{Life without death (\code{"life_without_death"}) - Conway's rules
+without death}
+\item{Day and night (\code{"day_and_night"}) - dead cells with 3, 6, 7,
+or 8 neighbors are born, and alive cells with 3, 4, 6, 7, or 8 neighbors
+survive}
+}
 
 Additionally, a custom rule function can be passed using the \code{rules}
 argument. This function should have three arguments: an integer matrix
@@ -80,20 +92,19 @@ count of these cells, and and integer representing the iteration count.
 The function should apply a set of rules and return an integer matrix
 having the same dimensions as the initial state.
 
-Note that this function will be checked for input/output consistency only,
-so all some or all of these parameters may be ignored so long as the check
-passes; see examples.
+Note that this function will be checked for input/output consistency
+\emph{only}, so some or all of these parameters may be ignored as long as
+this check passes; see examples.
 }
 \examples{
 \dontrun{
-
 set.seed(1)
 n <- 150
 m <- matrix(rbinom(n * n, 1, 0.3), n)
 plot(play_gol(m))
 
 plot(play_gol(m, rotate = TRUE, scale = TRUE),
-     col = c('white','red','yellow','blue','white'))
+     col = c('white', 'red', 'yellow', 'blue', 'white'))
 
 ## this system file contains some special cases
 source(system.file('source', 'gol_special.R', package = 'fun'))
@@ -107,10 +118,11 @@ plot(play_gol(invader, 20))
 plot(play_gol(tumbler))
 plot(play_gol(glider_gun, 200))
 
+
 ## alternative rules
+plot(play_gol(bowtie, 30, rules = 'highlife'))
 plot(play_gol(ladder, rules = 'life_without_death'))
 plot(play_gol(glider, 50, rules = 'day_and_night'))
-plot(play_gol(bowtie, 30, rules = 'high_life'))
 
 
 ## custom rules
