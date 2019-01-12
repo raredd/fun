@@ -1,7 +1,7 @@
 ### miscellaneous stuff
 # sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, fibonnaci2,
 # golden, ch, is.happy, is.prime, is.unary, is.binary, binToDec, decToBin,
-# decToUna
+# decToUna, enigma
 ###
 
 
@@ -50,12 +50,14 @@ spark <- function(...) {
 #' @export
 
 R <- function() {
-  eval(quote({h=character;r=rep;a=b=h(0);p=options()$width%/%2-5;n="
-              ";j=r(toupper(substring(mode(a),4,4)),sum(r(5:9,2)+1)-3)
-              k=r(5:9,2);k[4:5]=7;k=cumsum(k+1);j[k]=n;m=paste(h(1),h(1
-              ));s=c(0,k[-10])+1;j[c(16:17,24:26,32:33,46:47,53:55,61:64
-              ,70:74)]=m;for(i in 1:10)a=c(a,r(m,p),j[s[i]:k[i]])
-              cat(c(n,a),sep=b)}))
+  eval(quote({
+    h=character;C=rep;a=b=h(0);p=options()$wi%/%2-5;n="
+    ";j=C(toupper(substring(mode(a),4,4)),sum(C(5:9,2)+1)-3)
+    k=C(5:9,2);k[4:5]=7;k=cumsum(k+1);`[`(j,k)=n;m=paste(h(1),h(1
+    ));s=c(0,k[-10])+1;j[c(16:17,24:26,32:33,46:47,53:55,61:64
+    ,70:74)]=m;for(i in 1:10)a=c(a,C(m,p),j[`:`(s[i],k[i])])
+    cat(`[<-`(c(n,a),C(389),m),sep=b)
+  }))
 }
 
 #' Collatz conjecture
@@ -506,4 +508,77 @@ decToUna <- function(x) {
   # Warning: NAs introduced by coercion to integer range
   # as.integer(strrep('1', x)) * s
   strrep('1', x)
+}
+
+#' Enigma
+#' 
+#' Encode and decode a message.
+#' 
+#' @param x a string to encode or decode; alternatively, an object of class
+#' \code{"enigma"}
+#' @param i indices of the message letters in encoded string
+#' @param prob optional probabilities of random letters
+#' @param decode logical; if \code{TRUE}, \code{x} is assumed to be encoded
+#' 
+#' @examples
+#' x <- "this is my secret message. Don't tell anyone"
+#' set.seed(1)
+#' e1 <- enigma(x, c(3, 2, 2, 3))
+#' e1
+#' enigma(e1)
+#' ## alternatively
+#' enigma(c(e1), c(3, 2, 2, 3), decode = TRUE)
+#' 
+#' 
+#' ## use observed letter frequencies
+#' freq <- read.table(
+#'   system.file('scripts', 'letters.txt', package = 'fun'), header = TRUE
+#' )
+#' freq <- freq[order(freq$Letter), ]
+#' 
+#' set.seed(1)
+#' e2 <- enigma(x, c(3, 2, 2, 3), freq$Count)
+#' e2
+#' enigma(e2)
+#' 
+#' 
+#' identical(enigma(e1), enigma(e2))
+#' table(factor(e1, LETTERS))
+#' table(factor(e2, LETTERS))
+#' 
+#' 
+#' ## the code is every third letter
+#' e3 <- enigma(x, 3)
+#' matrix(e3, 3)[3, ]
+#' 
+#' @export
+
+enigma <- function(x, i = 1L, prob = NULL, decode = FALSE) {
+  if (decode) {
+    x <- gsub('[^A-z]', '', paste(x, collapse = ''))
+    x <- toupper(strsplit(x, '')[[1L]])
+    x <- structure(x, i = i, class = 'enigma')
+  }
+  
+  if (inherits(x, 'enigma')) {
+    idx <- cumsum(rep_len(attr(x, 'i'), length(x)))
+    return(paste(x[idx[idx <= length(x)]], collapse = ''))
+  }
+  
+  x <- gsub('[^A-z]', '', x)
+  x <- toupper(strsplit(x, '')[[1L]])
+  
+  idx <- cumsum(rep_len(i, length(x)))
+  res <- character(max(idx))
+  
+  res[idx] <- x
+  res[-idx] <- sample(LETTERS, sum(!nzchar(res)), TRUE, prob)
+  
+  structure(res, i = i, class = 'enigma')
+}
+
+#' @export
+print.enigma <- function(x, ...) {
+  print(paste(x, collapse = ''))
+  invisible(x)
 }

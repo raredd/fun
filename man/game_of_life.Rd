@@ -5,12 +5,15 @@
 \alias{gol}
 \alias{play_gol}
 \alias{plot.gol}
+\alias{gol_mat}
 \title{Conway's Game of Life}
 \usage{
 play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
   rules = c("conway", "highlife", "life_without_death", "day_and_night"))
 
 \method{plot}{gol}(x, col, sleep = 0.1, ...)
+
+gol_mat(mat, dim = NULL, where = c(1, 1))
 }
 \arguments{
 \item{mat}{a \code{{0,1}} integer matrix}
@@ -35,12 +38,20 @@ respectively}
 
 \item{...}{additional parameters passed to \code{\link[rawr]{waffle}} or
 further to \code{\link{par}}; see details}
+
+\item{dim}{the desired matrix dimension}
+
+\item{where}{the \code{row, col} location to insert \code{mat}}
 }
 \description{
-A simulation of cellular automaton devised by mathematician John Horton
-Conway. The life cycle is determined by the initial state matrix,
-\code{mat}, and will evolve for \code{gen} generations. \code{plot.gol}
-loops through all generation states to display the evolution over time.
+\code{play_gol} simulates cellular automaton devised by mathematician John
+Horton Conway. The life cycle is determined by the initial state matrix,
+\code{mat}, and will evolve for \code{gen} generations.
+
+\code{plot.gol} loops through all generation states to show the evolution.
+
+\code{gol_mat} is a convenience function to insert a simple, user-generated
+pattern, \code{mat}, into a larger matrix for longer evolution.
 }
 \details{
 Conway's Game of Life, or Life, consists of a grid of cells which have two
@@ -98,6 +109,7 @@ this check passes; see examples.
 }
 \examples{
 \dontrun{
+## basic usage with a random grid
 set.seed(1)
 n <- 150
 m <- matrix(rbinom(n * n, 1, 0.3), n)
@@ -106,9 +118,24 @@ plot(play_gol(m))
 plot(play_gol(m, rotate = TRUE, scale = TRUE),
      col = c('white', 'red', 'yellow', 'blue', 'white'))
 
+
+## basic usage with known pattern - lightweight spaceship
+m <- rbind(
+  c(0, 1, 0, 0, 1),
+  c(1, 0, 0, 0, 0),
+  c(1, 0, 0, 0, 1),
+  c(1, 1, 1, 1, 0)
+)
+
+## insert in 5x25 matrix for longer evolution
+mat <- gol_mat(m, c(5, 25), c(1, 20))
+plot(play_gol(mat))
+
+
 ## this system file contains some special cases
 source(system.file('source', 'gol_special.R', package = 'fun'))
 
+## played with default rules
 plot(play_gol(death))
 plot(play_gol(rowof10))
 plot(play_gol(big_exploder))

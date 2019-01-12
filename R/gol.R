@@ -1,5 +1,11 @@
 ### game of life
-# play_gol, gol_step, waffle, plot.gol
+# play_gol, plot.gol, gol_mat
+# 
+# unexported:
+# gol_step, waffle, rotate_, one_neighbor, all_neighbors
+#
+# rules (unexported):
+# rules_conway_, rules_hl_, rules_lwod_, rules_dn_
 # 
 # see ./inst/source/gol_special.R for data
 ###
@@ -7,11 +13,17 @@
 
 #' Conway's Game of Life
 #' 
-#' A simulation of cellular automaton devised by mathematician John Horton
-#' Conway. The life cycle is determined by the initial state matrix,
-#' \code{mat}, and will evolve for \code{gen} generations. \code{plot.gol}
-#' loops through all generation states to display the evolution over time.
+#' @description
+#' \code{play_gol} simulates cellular automaton devised by mathematician John
+#' Horton Conway. The life cycle is determined by the initial state matrix,
+#' \code{mat}, and will evolve for \code{gen} generations.
 #' 
+#' \code{plot.gol} loops through all generation states to show the evolution.
+#' 
+#' \code{gol_mat} is a convenience function to insert a simple, user-generated
+#' pattern, \code{mat}, into a larger matrix for longer evolution.
+#' 
+#' @details
 #' Conway's Game of Life, or Life, consists of a grid of cells which have two
 #' states at initiation, alive or dead, represented by 1s and 0s, respectively.
 #' The evolution of these cells is determined by the eight neighboring cells
@@ -79,12 +91,15 @@
 #' @param sleep length of pause between generations
 #' @param ... additional parameters passed to \code{\link[rawr]{waffle}} or
 #' further to \code{\link{par}}; see details
+#' @param dim the desired matrix dimension
+#' @param where the \code{row, col} location to insert \code{mat}
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Conway\%27s_Game_of_Life}
 #' 
 #' @examples
 #' \dontrun{
+#' ## basic usage with a random grid
 #' set.seed(1)
 #' n <- 150
 #' m <- matrix(rbinom(n * n, 1, 0.3), n)
@@ -93,9 +108,24 @@
 #' plot(play_gol(m, rotate = TRUE, scale = TRUE),
 #'      col = c('white', 'red', 'yellow', 'blue', 'white'))
 #' 
+#' 
+#' ## basic usage with known pattern - lightweight spaceship
+#' m <- rbind(
+#'   c(0, 1, 0, 0, 1),
+#'   c(1, 0, 0, 0, 0),
+#'   c(1, 0, 0, 0, 1),
+#'   c(1, 1, 1, 1, 0)
+#' )
+#' 
+#' ## insert in 5x25 matrix for longer evolution
+#' mat <- gol_mat(m, c(5, 25), c(1, 20))
+#' plot(play_gol(mat))
+#' 
+#' 
 #' ## this system file contains some special cases
 #' source(system.file('source', 'gol_special.R', package = 'fun'))
 #' 
+#' ## played with default rules
 #' plot(play_gol(death))
 #' plot(play_gol(rowof10))
 #' plot(play_gol(big_exploder))
@@ -186,6 +216,56 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
   )
 }
 
+#' @rdname game_of_life
+#' @export
+plot.gol <- function(x, col, sleep = 0.1, ...) {
+  stopifnot(
+    inherits(x, 'gol')
+  )
+  
+  op <- par(mar = c(1,1,1,1))
+  on.exit(par(op))
+  
+  col <- if (missing(col))
+    c('white', 'black') else
+      if (length(col) > 2L)
+        colorRampPalette(col)(1000L) else col
+  X  <- x$life
+  lx <- dim(X)[3L]
+  
+  cat('\nPlotting...\n')
+  pb <- txtProgressBar(max = lx, style = 3L, title = 'Plotting')
+  
+  for (ii in seq.int(lx)) {
+    setTxtProgressBar(pb, ii, title = 'Plotting')
+    Sys.sleep(sleep)
+    
+    y <- if (x$scaled)
+      matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii]))
+    else matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
+    
+    waffle(y, ...)
+  }
+  
+  close(pb)
+  
+  invisible(NULL)
+}
+
+#' @rdname game_of_life
+#' @export
+gol_mat <- function(mat, dim = NULL, where = c(1, 1)) {
+  mat <- as.matrix(mat)
+  dim <- if (is.null(dim))
+    dim(mat) else rep_len(dim, 2L)
+  wh <- where + dim(mat) - 1L
+  
+  res <- matrix(0L, dim[1L], dim[2L])
+  res[seq(where[1L], wh[1L]), seq(where[2L], wh[2L])] <- mat
+  
+  res
+}
+
 gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
   RULES <- if (is.function(rules))
     rules
@@ -232,42 +312,6 @@ waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
     list(matrix = mat, origin = `colnames<-`(o[, 2:1], c('x', 'y')),
          centers = cbind(x = psum(xl, xr) / 2, y = psum(yb, yt) / 2))
   )
-}
-
-#' @rdname game_of_life
-#' @export
-plot.gol <- function(x, col, sleep = 0.1, ...) {
-  stopifnot(
-    inherits(x, 'gol')
-  )
-  
-  op <- par(mar = c(1,1,1,1))
-  on.exit(par(op))
-  
-  col <- if (missing(col))
-    c('white', 'black') else
-      if (length(col) > 2L)
-        colorRampPalette(col)(1000L) else col
-  X  <- x$life
-  lx <- dim(X)[3L]
-  
-  cat('\nPlotting...\n')
-  pb <- txtProgressBar(max = lx, style = 3L, title = 'Plotting')
-  
-  for (ii in seq.int(lx)) {
-    setTxtProgressBar(pb, ii, title = 'Plotting')
-    Sys.sleep(sleep)
-    
-    y <- if (x$scaled)
-      matrix(col[round(X[,, ii] * 1000 + 1L)], nrow(X[,, ii]))
-    else matrix(col[X[,, ii] + 1L], nrow(X[,, ii]))
-    
-    waffle(y, ...)
-  }
-  
-  close(pb)
-  
-  invisible(NULL)
 }
 
 ## rule sets
