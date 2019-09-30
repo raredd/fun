@@ -33,3 +33,6 @@ collatz(63728127)
 
 \url{https://oeis.org/A006877}
 }
+\seealso{
+\code{\link{A006877}}
+}
