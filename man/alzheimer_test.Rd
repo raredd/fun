@@ -4,8 +4,8 @@
 \alias{alzheimer_test}
 \title{Alzheimer's test}
 \usage{
-alzheimer_test(char1 = c("9", "O", "M", "I", "F", "D"), char2 = c("6", "C",
-  "N", "T", "E", "O"), nr = 10, nc = 30, seed, ...)
+alzheimer_test(char1 = c("9", "O", "M", "I", "F", "D"), char2 = c("6",
+  "C", "N", "T", "E", "O"), nr = 10, nc = 30, seed, ...)
 }
 \arguments{
 \item{char1}{the background character}
