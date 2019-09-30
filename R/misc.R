@@ -1,7 +1,7 @@
 ### miscellaneous stuff
 # sparkbar, R, collatz, trace_path, bubble_sort, fibonnaci, fibonnaci2,
 # golden, ch, is.happy, is.prime, is.unary, is.binary, binToDec, decToBin,
-# decToUna, enigma
+# decToUna, enigma, heart, the_force
 ###
 
 
@@ -71,6 +71,9 @@ R <- function() {
 #' of numbers \code{<= n}, that is, from one to \code{n}, the number of 
 #' iterations each starting value takes to reach 1
 #' 
+#' @seealso
+#' \code{\link{A006877}}
+#' 
 #' @references 
 #' \url{http://imgs.xkcd.com/comics/collatz_conjecture.png}
 #' 
@@ -88,9 +91,6 @@ R <- function() {
 #' @export
 
 collatz <- function(n, stoptime = FALSE) {
-  ## TODO:
-  ##   - add A060412
-  
   stopifnot(
     round(n) == n,
     n > 0
@@ -581,4 +581,54 @@ enigma <- function(x, i = 1L, prob = NULL, decode = FALSE) {
 print.enigma <- function(x, ...) {
   print(paste(x, collapse = ''))
   invisible(x)
+}
+
+#' <3
+#' 
+#' \code{<3}
+#' 
+#' @export
+
+heart <- function(n = 1e4, col = rgb(1, 0, 1, 0.25), ...) {
+  ## <3
+  set.seed(1)
+  r <- 2 / (1 + sqrt(5))
+  re <- sqrt(1 - r * r)
+  x <- rnorm(n)
+  y <- x * r + rnorm(n) * re
+  y[x < 0] <- -y[x < 0]
+  
+  op <- par(mar = rep(0, 4))
+  on.exit(par(op))
+  plot(x, y, col = col, axes = FALSE, asp = 1, ...)
+  
+  invisible(list(x = x, y = y))
+}
+
+#' the force
+#' 
+#' the force
+#' 
+#' @seealso
+#' \url{https://twitter.com/rafalab/status/992397723532963841}
+#' 
+#' @export
+
+the_force <- function() {
+  op <- par(bg = 'black', fg = 'white')
+  on.exit(par(op))
+  
+  x <- y <- 0.5
+  z <- '|-o-|'
+  s <- cbind(runif(50), runif(50))
+  m <- c(-1, 1) / 20
+  
+  while (TRUE){
+    plot(0, 0, 'n', 0:1, 0:1, axes = FALSE, ann = FALSE)
+    points(s, pch = '.')
+    text(x, y, z, cex = 4)
+    x <- pmin(pmax(x + sample(m, 1), 0), 1)
+    y <- pmin(pmax(y + sample(m, 1), 0), 1)
+    Sys.sleep(0.25)
+  }
 }
