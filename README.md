@@ -18,7 +18,7 @@ to play:            | description
 `mine_sweeper()`    | clear the field of mines to save your legs
 `sliding_puzzle()`  | slide the tiles to order the numbers because you're bored
 `gomoku()`          | get five tiles in a row for bragging rights (two players)
-`witchcraft()`      | remember the sequence of numbers and win a prize (there is no prize)
+`chimp_test()`      | https://www.youtube.com/watch?v=zsXP8qeFF6A
 
 ### other stuff
 
@@ -252,14 +252,30 @@ is.happy(19)
 
 An implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). Using the `rules` argument, one can specify a rule set for the cellular automation or supply a custom function.
 
-This package also provides several special cases of initial states for the built-in rule functions.
-
 ```r
 ## load some initial states
 source(system.file('source', 'gol_special.R', package = 'fun'))
 
 ## simulate life
-plot(play_gol(glider_gun, 200))
+plot(play_gol(gol_special$glider_gun, 200))
 ```
+
+This package also provides several special cases of initial states for the built-in rule functions:
+
+```r
+names(gol_special)
+```
+
+```
+[1] "big_exploder"   "bowtie"    "death"          "glider"      "glider_gun"     "gosper_gun"     "invader"
+[8] "ladder"         "rowof10"   "small_exploder" "tumbler"
+```
+
+|Rule set           |package option     |Description                                                                                               |
+|:------------------|:------------------|:---------------------------------------------------------------------------------------------------------|
+|Conway             |`"conway"`         |default rules                                                                                             |
+|Highlife           |`"highlife"`       |similar to Conway with an additional rule that dead cells with six neighbors are born                     |
+|Life without death |`"life_without_death"` |Conway's rules without death                                                                              |
+|Day and night      |`"day_and_night"`  |dead cells with 3, 6, 7, or 8 neighbors are born, and alive cells with 3, 4, 6, 7, or 8 neighbors survive |
 
 <div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/gol/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" /></div>

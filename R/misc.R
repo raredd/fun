@@ -623,7 +623,7 @@ the_force <- function() {
   s <- cbind(runif(50), runif(50))
   m <- c(-1, 1) / 20
   
-  while (TRUE){
+  while (TRUE) {
     plot(0, 0, 'n', 0:1, 0:1, axes = FALSE, ann = FALSE)
     points(s, pch = '.')
     text(x, y, z, cex = 4)

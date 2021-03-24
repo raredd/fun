@@ -16,6 +16,9 @@ element of \code{size} must be greater than 1.}
 will be omited.}
 }
 \description{
+A sliding tile puzzle game.
+}
+\details{
 Arrange the grid so that numbers are sequential from left to right, top
 to bottom.
 
@@ -23,9 +26,8 @@ If \code{size} is specified and \code{z} is \code{NULL}, then the
 function will generate a solvable sliding puzzle.
 }
 \note{
-Linux/Mac users have to use \code{\link[grDevices]{X11}(type
-= 'Xlib')} or the Cairo graphics device \code{Cairo()} in the
-package \pkg{cairoDevice}.
+Linux/Mac users have to use \code{\link[grDevices]{X11} (type = 'Xlib')} or
+the Cairo graphics device \code{Cairo()} in the package \pkg{cairoDevice}.
 }
 \examples{
 sliding_puzzle()

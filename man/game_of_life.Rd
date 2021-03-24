@@ -8,15 +8,20 @@
 \alias{gol_mat}
 \title{Conway's Game of Life}
 \usage{
-play_gol(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
-  rules = c("conway", "highlife", "life_without_death", "day_and_night"))
+play_gol(
+  m,
+  gen = max(dim(m)),
+  rotate = TRUE,
+  scale = FALSE,
+  rules = c("conway", "highlife", "life_without_death", "day_and_night")
+)
 
 \method{plot}{gol}(x, col, sleep = 0.1, ...)
 
-gol_mat(mat, dim = NULL, where = c(1, 1))
+gol_mat(m, dim = NULL, where = c(1, 1))
 }
 \arguments{
-\item{mat}{a \code{{0,1}} integer matrix}
+\item{m}{a \code{{0,1}} integer matrix}
 
 \item{gen}{number of generations to simulate}
 
@@ -41,17 +46,17 @@ further to \code{\link{par}}; see details}
 
 \item{dim}{the desired matrix dimension}
 
-\item{where}{the \code{row, col} location to insert \code{mat}}
+\item{where}{the \code{row, col} location to insert \code{m}}
 }
 \description{
 \code{play_gol} simulates cellular automaton devised by mathematician John
 Horton Conway. The life cycle is determined by the initial state matrix,
-\code{mat}, and will evolve for \code{gen} generations.
+\code{m}, and will evolve for \code{gen} generations.
 
 \code{plot.gol} loops through all generation states to show the evolution.
 
 \code{gol_mat} is a convenience function to insert a simple, user-generated
-pattern, \code{mat}, into a larger matrix for longer evolution.
+pattern, \code{m}, into a larger matrix for longer evolution.
 }
 \details{
 Conway's Game of Life, or Life, consists of a grid of cells which have two
@@ -85,6 +90,7 @@ exported function which can be accessed using \code{fun:::waffle}. Full
 documentation and usage can be found in the \pkg{rawr} package version.
 
 Four rule sets are built-in:
+
 \enumerate{
 \item{Conway (\code{"conway"}) - described above}
 \item{Highlife (\code{"highlife"}) - similar to Conway with an additional
@@ -128,28 +134,28 @@ m <- rbind(
 )
 
 ## insert in 5x25 matrix for longer evolution
-mat <- gol_mat(m, c(5, 25), c(1, 20))
-plot(play_gol(mat))
+m <- gol_mat(m, c(5, 25), c(1, 20))
+plot(play_gol(m))
 
 
 ## this system file contains some special cases
 source(system.file('source', 'gol_special.R', package = 'fun'))
 
 ## played with default rules
-plot(play_gol(death))
-plot(play_gol(rowof10))
-plot(play_gol(big_exploder))
-plot(play_gol(small_exploder))
-plot(play_gol(glider, 50))
-plot(play_gol(invader, 20))
-plot(play_gol(tumbler))
-plot(play_gol(glider_gun, 200))
+plot(play_gol(gol_special$death))
+plot(play_gol(gol_special$rowof10))
+plot(play_gol(gol_special$big_exploder))
+plot(play_gol(gol_special$small_exploder))
+plot(play_gol(gol_special$glider, 50))
+plot(play_gol(gol_special$invader, 20))
+plot(play_gol(gol_special$tumbler))
+plot(play_gol(gol_special$glider_gun, 200))
 
 
 ## alternative rules
-plot(play_gol(bowtie, 30, rules = 'highlife'))
-plot(play_gol(ladder, rules = 'life_without_death'))
-plot(play_gol(glider, 50, rules = 'day_and_night'))
+plot(play_gol(gol_special$bowtie, 30, rules = 'highlife'))
+plot(play_gol(gol_special$ladder, rules = 'life_without_death'))
+plot(play_gol(gol_special$glider, 50, rules = 'day_and_night'))
 
 
 ## custom rules
@@ -181,7 +187,6 @@ my_rule <- function(...) {
   x
 }
 plot(play_gol(matrix(1, 10, 10), 20, rules = my_rule))
-
 }
 
 }

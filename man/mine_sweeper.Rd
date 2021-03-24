@@ -4,8 +4,7 @@
 \alias{mine_sweeper}
 \title{Mine sweeper}
 \usage{
-mine_sweeper(level = "beginner", width, height, mines, cheat = FALSE,
-  seed)
+mine_sweeper(level = "beginner", width, height, mines, cheat = FALSE, seed)
 }
 \arguments{
 \item{level}{skill level, one of 'beginner', 'intermediate', 'advanced',

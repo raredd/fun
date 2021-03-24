@@ -19,6 +19,8 @@ coprime, otherwise a(n) = a(n-1)/gcd(a(n-1),n).
 \seealso{
 \url{https://oeis.org/A133058}
 
-Other oeis: \code{\link{A006877}}, \code{\link{A265326}}
+Other oeis: 
+\code{\link{A006877}()},
+\code{\link{A265326}()}
 }
 \concept{oeis}

@@ -3,7 +3,6 @@
 \docType{package}
 \name{fun}
 \alias{fun}
-\alias{fun-package}
 \title{fun with R}
 \description{
 This is a collection of games and other stuff written in R.

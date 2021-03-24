@@ -18,6 +18,8 @@ A265326: n-th prime minus its binary reversal.
 \seealso{
 \url{https://oeis.org/A265326}
 
-Other oeis: \code{\link{A006877}}, \code{\link{A133058}}
+Other oeis: 
+\code{\link{A006877}()},
+\code{\link{A133058}()}
 }
 \concept{oeis}

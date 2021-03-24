@@ -16,12 +16,12 @@
 #' @description
 #' \code{play_gol} simulates cellular automaton devised by mathematician John
 #' Horton Conway. The life cycle is determined by the initial state matrix,
-#' \code{mat}, and will evolve for \code{gen} generations.
+#' \code{m}, and will evolve for \code{gen} generations.
 #' 
 #' \code{plot.gol} loops through all generation states to show the evolution.
 #' 
 #' \code{gol_mat} is a convenience function to insert a simple, user-generated
-#' pattern, \code{mat}, into a larger matrix for longer evolution.
+#' pattern, \code{m}, into a larger matrix for longer evolution.
 #' 
 #' @details
 #' Conway's Game of Life, or Life, consists of a grid of cells which have two
@@ -55,6 +55,7 @@
 #' documentation and usage can be found in the \pkg{rawr} package version.
 #' 
 #' Four rule sets are built-in:
+#' 
 #' \enumerate{
 #' \item{Conway (\code{"conway"}) - described above}
 #' \item{Highlife (\code{"highlife"}) - similar to Conway with an additional
@@ -77,7 +78,7 @@
 #' \emph{only}, so some or all of these parameters may be ignored as long as
 #' this check passes; see examples.
 #' 
-#' @param mat a \code{{0,1}} integer matrix
+#' @param m a \code{{0,1}} integer matrix
 #' @param gen number of generations to simulate
 #' @param rotate logical; neighbor calculator; see details
 #' @param scale logical; neighbor scaling; see details
@@ -92,7 +93,7 @@
 #' @param ... additional parameters passed to \code{\link[rawr]{waffle}} or
 #' further to \code{\link{par}}; see details
 #' @param dim the desired matrix dimension
-#' @param where the \code{row, col} location to insert \code{mat}
+#' @param where the \code{row, col} location to insert \code{m}
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Conway\%27s_Game_of_Life}
@@ -118,28 +119,28 @@
 #' )
 #' 
 #' ## insert in 5x25 matrix for longer evolution
-#' mat <- gol_mat(m, c(5, 25), c(1, 20))
-#' plot(play_gol(mat))
+#' m <- gol_mat(m, c(5, 25), c(1, 20))
+#' plot(play_gol(m))
 #' 
 #' 
 #' ## this system file contains some special cases
 #' source(system.file('source', 'gol_special.R', package = 'fun'))
 #' 
 #' ## played with default rules
-#' plot(play_gol(death))
-#' plot(play_gol(rowof10))
-#' plot(play_gol(big_exploder))
-#' plot(play_gol(small_exploder))
-#' plot(play_gol(glider, 50))
-#' plot(play_gol(invader, 20))
-#' plot(play_gol(tumbler))
-#' plot(play_gol(glider_gun, 200))
+#' plot(play_gol(gol_special$death))
+#' plot(play_gol(gol_special$rowof10))
+#' plot(play_gol(gol_special$big_exploder))
+#' plot(play_gol(gol_special$small_exploder))
+#' plot(play_gol(gol_special$glider, 50))
+#' plot(play_gol(gol_special$invader, 20))
+#' plot(play_gol(gol_special$tumbler))
+#' plot(play_gol(gol_special$glider_gun, 200))
 #' 
 #' 
 #' ## alternative rules
-#' plot(play_gol(bowtie, 30, rules = 'highlife'))
-#' plot(play_gol(ladder, rules = 'life_without_death'))
-#' plot(play_gol(glider, 50, rules = 'day_and_night'))
+#' plot(play_gol(gol_special$bowtie, 30, rules = 'highlife'))
+#' plot(play_gol(gol_special$ladder, rules = 'life_without_death'))
+#' plot(play_gol(gol_special$glider, 50, rules = 'day_and_night'))
 #' 
 #' 
 #' ## custom rules
@@ -171,7 +172,6 @@
 #'   x
 #' }
 #' plot(play_gol(matrix(1, 10, 10), 20, rules = my_rule))
-#' 
 #' }
 #' 
 #' @aliases gol
@@ -180,22 +180,22 @@ NULL
 
 #' @rdname game_of_life
 #' @export
-play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
+play_gol <- function(m, gen = max(dim(m)), rotate = TRUE, scale = FALSE,
                      rules = c('conway', 'highlife', 'life_without_death',
                                'day_and_night')) {
   stopifnot(
-    is.matrix(mat),
-    all(mat %in% 0:1)
+    is.matrix(m),
+    all(m %in% 0:1)
   )
   
   RULES <- if (is.function(rules)) {
-    if (any(dim(mat) != dim(rules(mat, rep_len(0L, length(mat)), NULL))))
+    if (any(dim(m) != dim(rules(m, rep_len(0L, length(m)), NULL))))
       stop('Improper rule function')
     rules
   } else match.arg(rules)
   
-  life <- array(dim = c(dim(mat), gen + 1L))
-  life[,, 1L] <- mat
+  life <- array(dim = c(dim(m), gen + 1L))
+  life[,, 1L] <- m
   
   cat('\nEvolving...\n')
   pb <- txtProgressBar(max = gen, style = 3L, title = 'Evolving')
@@ -203,7 +203,7 @@ play_gol <- function(mat, gen = max(dim(mat)), rotate = TRUE, scale = FALSE,
   ii <- 1L
   while (ii <= gen) {
     setTxtProgressBar(pb, ii, title = 'Evolving')
-    life[,, ii + 1L] <- mat <- gol_step(mat, rotate, scale, RULES, ii)
+    life[,, ii + 1L] <- m <- gol_step(m, rotate, scale, RULES, ii)
     ii <- ii + 1L
   }
   
@@ -254,19 +254,19 @@ plot.gol <- function(x, col, sleep = 0.1, ...) {
 
 #' @rdname game_of_life
 #' @export
-gol_mat <- function(mat, dim = NULL, where = c(1, 1)) {
-  mat <- as.matrix(mat)
+gol_mat <- function(m, dim = NULL, where = c(1, 1)) {
+  m <- as.matrix(m)
   dim <- if (is.null(dim))
-    dim(mat) else rep_len(dim, 2L)
-  wh <- where + dim(mat) - 1L
+    dim(m) else rep_len(dim, 2L)
+  wh <- where + dim(m) - 1L
   
   res <- matrix(0L, dim[1L], dim[2L])
-  res[seq(where[1L], wh[1L]), seq(where[2L], wh[2L])] <- mat
+  res[seq(where[1L], wh[1L]), seq(where[2L], wh[2L])] <- m
   
   res
 }
 
-gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
+gol_step <- function(m, rotate = TRUE, scale = FALSE, rules, iteration) {
   RULES <- if (is.function(rules))
     rules
   else switch(rules,
@@ -278,16 +278,16 @@ gol_step <- function(mat, rotate = TRUE, scale = FALSE, rules, iteration) {
   
   if (rotate) {
     if (scale)
-      return(rotate_(mat, TRUE))
-    RULES(mat, rotate_(mat, FALSE), iteration)
+      return(rotate_(m, TRUE))
+    RULES(m, rotate_(m, FALSE), iteration)
   } else {
     if (scale)
-      return(matrix(all_neighbors(mat), nrow(mat)))
-    RULES(mat, all_neighbors(mat), iteration)
+      return(matrix(all_neighbors(m), nrow(m)))
+    RULES(m, all_neighbors(m), iteration)
   } 
 }
 
-waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
+waffle <- function(m, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
   psum <- function(...) {
     rowSums(do.call('cbind', list(...)))
   }
@@ -299,17 +299,17 @@ waffle <- function(mat, xpad = 0, ypad = 0, asp = 1, ..., reset_par = TRUE) {
   plot.new()
   par(...)
   
-  o <- cbind(c(row(mat)), c(col(mat))) - 1
+  o <- cbind(c(row(m)), c(col(m))) - 1
   
   plot.window(
     xlim = c(0, max(o[, 2L]) + 1), ylim = c(0, max(o[, 1L]) + 1),
     xaxs = 'i', yaxs = 'i', asp = asp
   )
   rect(xl <- o[, 2L], yb <- o[, 1L], xr <- o[, 2L] + (1 - xpad),
-       yt <- o[, 1L] + (1 - ypad), col = c(mat), border = NA)
+       yt <- o[, 1L] + (1 - ypad), col = c(m), border = NA)
   
   invisible(
-    list(matrix = mat, origin = `colnames<-`(o[, 2:1], c('x', 'y')),
+    list(matrix = m, origin = `colnames<-`(o[, 2:1], c('x', 'y')),
          centers = cbind(x = psum(xl, xr) / 2, y = psum(yb, yt) / 2))
   )
 }
@@ -372,22 +372,22 @@ rules_dn_ <- function(X, Y, Z) {
   matrix(x, nrow(X))
 }
 
-rotate_ <- function(mat, scale = scale) {
-  nr <- nrow(mat)
-  nc <- ncol(mat)
+rotate_ <- function(m, scale = scale) {
+  nr <- nrow(m)
+  nc <- ncol(m)
   padr <- rep_len(0L, nr)
   padc <- rep_len(0L, nc)
   
   l <- list(
-    u  = rbind(padc, mat[-nr, ]),
-    d  = rbind(mat[-1L, ], padc),
-    l  = cbind(padr, mat[, -nc]),
-    r  = cbind(mat[, -1L], padr),
+    u  = rbind(padc, m[-nr, ]),
+    d  = rbind(m[-1L, ], padc),
+    l  = cbind(padr, m[, -nc]),
+    r  = cbind(m[, -1L], padr),
     
-    ul = rbind(padc, cbind(padr[-1L], mat[-nr, -nc])),
-    ur = rbind(padc, cbind(mat[-nr, -1L], padr[-1L])),
-    dl = rbind(cbind(padr[-1L], mat[-1L, -nc]), padc),
-    dr = rbind(cbind(mat[-1L, -1L], padr[-1L]), padc)
+    ul = rbind(padc, cbind(padr[-1L], m[-nr, -nc])),
+    ur = rbind(padc, cbind(m[-nr, -1L], padr[-1L])),
+    dl = rbind(cbind(padr[-1L], m[-1L, -nc]), padc),
+    dr = rbind(cbind(m[-1L, -1L], padr[-1L]), padc)
   )
   rot <- `dimnames<-`(Reduce('+', l), NULL)
   
@@ -396,9 +396,9 @@ rotate_ <- function(mat, scale = scale) {
 }
 
 ## rotate_ does the job of these two fns which are slow af
-one_neighbor <- function(mat, rc) {
+one_neighbor <- function(m, rc) {
   ## get count of neighbors for one (rc = c(row_index, column_index))
-  # one_neighbor(mat, c(2,4))
+  # one_neighbor(m, c(2,4))
   dir <- list(
     u  = c(-1, 0),   d = c(1, 0),   l = c(0, -1),  r = c(0, 1),
     ul = c(-1, -1), ur = c(-1, 1), dl = c(1, -1), dr = c(1, 1)
@@ -413,17 +413,17 @@ one_neighbor <- function(mat, rc) {
   
   nn <- vapply(seq_along(dir), function(x) {
     d <- dir[[x]]
-    try0(mat[rc[1L] + d[1L], rc[2L] + d[2L]])
+    try0(m[rc[1L] + d[1L], rc[2L] + d[2L]])
   }, integer(1L))
   
   sum(nn)
 }
 
-all_neighbors <- function(mat) {
+all_neighbors <- function(m) {
   ## get count of neighbors for all
-  idx <- cbind(c(row(mat)), c(col(mat)))
+  idx <- cbind(c(row(m)), c(col(m)))
   m   <- vapply(seq.int(nrow(idx)), function(x)
-    one_neighbor(mat, idx[x, ]), integer(1L))
+    one_neighbor(m, idx[x, ]), integer(1L))
   
-  matrix(m, nrow(mat))
+  matrix(m, nrow(m))
 }

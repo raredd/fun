@@ -21,6 +21,8 @@ records for number of steps to reach 1.
 
 \code{\link{collatz}}
 
-Other oeis: \code{\link{A133058}}, \code{\link{A265326}}
+Other oeis: 
+\code{\link{A133058}()},
+\code{\link{A265326}()}
 }
 \concept{oeis}

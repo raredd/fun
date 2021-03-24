@@ -2,15 +2,18 @@
 % Please edit documentation in R/gomoku.R
 \name{gomoku}
 \alias{gomoku}
-\title{The game of Gomoku (Five in a row)}
+\title{Gomoku}
 \usage{
-gomoku(n = 19)
+gomoku(n = 19L)
 }
 \arguments{
 \item{n}{the number of rows and columns in the board (default is 19 and 
 generates the standard board)}
 }
 \description{
+The game of Gomoku (Five in a row).
+}
+\details{
 You need a friend to play this game.
 
 Play one after the other using black and white stones, respectively. The 
@@ -18,8 +21,8 @@ winner is the first player to get an unbroken row of five stones
 horizontally, vertically, or diagonally.
 }
 \note{
-The players should judge the winner by themselves; this function does 
-not do this job (patches are welcome, of course).
+The players should judge the winner by themselves; this function does not
+do this job (patches are welcome, of course).
 }
 \examples{
 gomoku()
