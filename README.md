@@ -260,6 +260,10 @@ source(system.file('source', 'gol_special.R', package = 'fun'))
 plot(play_gol(gol_special$glider_gun, 200))
 ```
 
+<div align=center>
+<img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/gol/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" />
+</div>
+
 This package also provides several special cases of initial states for the built-in rule functions:
 
 ```r
@@ -277,5 +281,3 @@ names(gol_special)
 |Highlife           |`"highlife"`       |similar to Conway with an additional rule that dead cells with six neighbors are born                     |
 |Life without death |`"life_without_death"` |Conway's rules without death                                                                              |
 |Day and night      |`"day_and_night"`  |dead cells with 3, 6, 7, or 8 neighbors are born, and alive cells with 3, 4, 6, 7, or 8 neighbors survive |
-
-<div align=center><img src="https://raw.githubusercontent.com/raredd/fun/master/inst/animate/gol/glider_gun.gif" title="glider gun example" alt="glider gun example" style="display: block; margin: auto;" /></div>
